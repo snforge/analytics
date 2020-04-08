@@ -1,0 +1,47 @@
+{
+  "name": "analytics",
+  "version": "0.5.0",
+  "private": true,
+  "scripts": {
+    "build": "gridsome build",
+    "develop": "gridsome develop",
+    "explore": "gridsome explore"
+  },
+  "dependencies": {
+    "@gridsome/source-filesystem": "^0.6.2",
+    "@gridsome/transformer-remark": "^0.5.0",
+    "@sindresorhus/slugify": "^0.11.0",
+    "gridsome": "^0.7.13",
+    "axios": "^0.19.2",
+    "lodash": "^4.17.15",
+    "vuetify": "^2.2.20",
+    "vue-clamp": "^0.3.0",
+    "vue-fuse": "^2.2.1",
+    "dygraphs": "^2.1.0",
+    "d3": "^5.15.1",
+    "chart.js": "^2.9.3",
+    "chartjs-plugin-labels": "^1.1.0",
+    "tinycolor2": "^1.4.1",
+    "loglevel": "^1.6.7",
+    "moment": "^2.24.0",
+    "mapbox-gl": "^1.9.1",
+    "deck.gl": "^8.1.1"
+  },
+  "devDependencies": {
+    "fs-extra": "^9.0.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "prettier": "^1.19.1",
+    "webpack-node-externals": "^1.7.2",
+    "bodybuilder": "^2.2.20",
+    "elasticsearch": "^16.6.0",
+    "pino": "^5.16.0",
+    "ramda": "^0.26.1",
+    "node-sass": "^4.13.0",
+    "postcss-import": "^12.0.1",
+    "postcss-nested": "^4.2.1",
+    "sass-loader": "^8.0.0",
+    "datalib": "^1.9.2"
+  }
+}
