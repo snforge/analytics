@@ -110,8 +110,9 @@ module.exports = function(api) {
     // First, process data
     dataprocessor.loadTimeSeries();
     dataprocessor.loadTimeSeriesCA(); 
+    dataprocessor.loadTimeSeriesNewCases();
+    dataprocessor.loadTimeSeriesCANewCases();
     dataprocessor.processGeo();
-
 
     // Just main page for now
     createPage({

@@ -5,16 +5,7 @@
         <geo-map></geo-map>
       </v-col>
     </v-row>
-    <v-row no-gutters>
-      <v-col cols="12">
-        <dark-banner>
-          <v-col class="text-center" dense>
-            <p class="display-2 mb-0">{{pageTitle}}</p>
-            <p class="display-4 mb-0 font-weight-bold red--text text--darken-1">{{pageTotal}}</p>
-          </v-col>
-        </dark-banner>
-      </v-col>
-    </v-row>
+// the dark banner is in the file dark_banner.vue
     <v-row no-gutters>
       <v-col>
         <v-container>
@@ -25,8 +16,10 @@
       <v-col>
         <v-container>
           <div class="pa-1 mb-0" style="height: 600px;">
-            <dygraphs :data="chartData" :options="chartOptions" :dark="false" style="height: 200px;"></dygraphs>
-            <dygraphs :data="chartDataCA" :options="chartOptions" :dark="false" style="height: 200px;"></dygraphs>
+            <dygraphs :data="chartData" :options="chartOptions" :dark="false" style="height: 150px;"></dygraphs>
+            <dygraphs :data="chartDataCA" :options="chartOptions" :dark="false" style="height: 150px;"></dygraphs>
+            <dygraphs :data="chartDataNewCases" :options="chartOptions" :dark="false" style="height: 150px;"></dygraphs>
+            <dygraphs :data="chartDataCANewCases" :options="chartOptions" :dark="false" style="height: 150px;"></dygraphs>
           </div>
         </v-container>
       </v-col>
@@ -79,7 +72,9 @@ export default {
         }
       },
       chartData: [],
-      chartDataCA: []
+      chartDataCA: [],
+      chartDataNewCases: [],
+      chartDataCANewCases: []
     };
   },
   mounted: function() {
@@ -106,6 +101,22 @@ export default {
           chartDataCA = usCATrendResponse.data.data.map( x => [new Date(x[0]),x[1]]);
         }
         this.chartDataCA = chartDataCA;
+      }
+      let usNewCasesTrendResponse = await backendAPI.getUSNewCasesTrendData('us_new_cases_trend.json');
+      if(usNewCasesTrendResponse.success){
+        let chartData = [];
+        if(Array.isArray(usNewCasesTrendResponse.data.data)){
+          chartData = usNewCasesTrendResponse.data.data.map( x => [new Date(x[0]),x[1]]);
+        }
+        this.chartDataNewCases = chartData;
+      }
+      let usCANewCasesTrendResponse = await backendAPI.getUSCANewCasesTrendData('us_CA_new_cases_trend.json');
+      if(usCANewCasesTrendResponse.success){
+        let chartData = [];
+        if(Array.isArray(usCANewCasesTrendResponse.data.data)){
+          chartData = usCANewCasesTrendResponse.data.data.map( x => [new Date(x[0]),x[1]]);
+        }
+        this.chartDataCANewCases = chartData;
       }
       console.log('Got response!');
     },

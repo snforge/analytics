@@ -10,6 +10,12 @@ const backendAPI = {
   },
   async getUSCATrendData() {
     return new RestOp({ method: 'get', url: `${basePath}us_CA_trend.json` }).execute();
+  },
+  async getUSNewCasesTrendData() {
+    return new RestOp({ method: 'get', url: `${basePath}us_new_cases_trend.json` }).execute();
+  },
+  async getUSCANewCasesTrendData() {
+    return new RestOp({ method: 'get', url: `${basePath}us_CA_new_cases_trend.json` }).execute();
   }
 };
 

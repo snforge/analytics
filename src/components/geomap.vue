@@ -6,18 +6,15 @@
 <script>
 import * as d3 from 'd3';
 import usgeodata from '../../static/us_geo.json';
-//import mapboxgl from 'mapbox-gl';
+import mapboxgl from 'mapbox-gl';
 import { Deck } from '@deck.gl/core';
 import { HexagonLayer } from '@deck.gl/aggregation-layers';
-import log from './log';
 
 const INITIAL_VIEW_STATE = {
   latitude: 37.8,
   longitude: -122.45,
   zoom: 15
 };
-
-let mapboxgl = null;
 
 export default {
   name: 'GeoMap',
@@ -58,12 +55,8 @@ export default {
   },
   watch: {},
   mounted() {
-    import('mapbox-gl').then(module => {
-      log.info('mapbox-gl: imported');
-      mapboxgl = module.default;
-      this.$nextTick(() => {
-        this.render();
-      });
+    this.$nextTick(() => {
+      this.render();
     });
   },
   beforeDestroy: function() {},
