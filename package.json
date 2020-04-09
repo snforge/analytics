@@ -5,6 +5,7 @@
   "scripts": {
     "build": "gridsome build",
     "develop": "gridsome develop",
+    "develop-debug": "node --inspect-brk=9229 node_modules/gridsome/bin/gridsome.js develop",
     "explore": "gridsome explore"
   },
   "dependencies": {

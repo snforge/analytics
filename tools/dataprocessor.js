@@ -81,6 +81,13 @@ class DataProcessor {
       return [currDate, value];
     });
 
+    // Group by State, County; filter specific state
+    let rollupSC = dl
+      .groupby(['Province_State', 'Admin2'])
+      .summarize([{ name: todayColumn, ops: ['sum'] }])
+      .execute(data)
+      .filter(d => d['Province_State'] === 'California');
+
     // TODO Write to JSON
     let jsonChartData = {
       total: currentTotal,

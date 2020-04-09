@@ -6,9 +6,12 @@
 <script>
 import * as d3 from 'd3';
 import usgeodata from '../../static/us_geo.json';
-import mapboxgl from 'mapbox-gl';
+//import mapboxgl from 'mapbox-gl';
 import { Deck } from '@deck.gl/core';
 import { HexagonLayer } from '@deck.gl/aggregation-layers';
+import log from './log';
+
+let mapboxgl = null;
 
 const INITIAL_VIEW_STATE = {
   latitude: 37.8,
@@ -55,8 +58,12 @@ export default {
   },
   watch: {},
   mounted() {
-    this.$nextTick(() => {
-      this.render();
+    import('mapbox-gl').then(module => {
+      log.info('mapbox-gl: imported');
+      mapboxgl = module.default;
+      this.$nextTick(() => {
+        this.render();
+      });
     });
   },
   beforeDestroy: function() {},
