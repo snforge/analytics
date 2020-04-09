@@ -237,14 +237,9 @@ class DataProcessor {
     let dataColumns = Object.keys(data[0]).slice(11);
     for ( let i = 1; i < dataNewCases.length; i++ )
     {
-      // logger.info(`NEW CASES :  ${dataNewCases[0].length}`);
       for ( let j = dataColumns.length - 1; j > 0; j-- )
       {
-        // logger.info(`dataColumns[j]:  ${dataColumns[j]}`); 
-        // logger.info(`dataNewCases[i][dataColumns[j]]):  ${dataNewCases[i][dataColumns[j]]}`);
         dataNewCases[i][dataColumns[j]] = dataNewCases[i][dataColumns[j]] - dataNewCases[i][dataColumns[j-1]];
-        // logger.info(`dataNewCases[i,dataColumns[j]]:  ${dataNewCases[i][dataColumns[j]}`);
-        // logger.info(`dataNewCases[i,dataColumns[j-1]]:  ${dataNewCases[i][dataColumns[j-1]]}`); 
       } 
     }
 
