@@ -1,8 +1,12 @@
 <template>
-  <div class="deck-container" style="height: 600px;width: 100%;">
+  <div ref="container" :class="containerClass">
     <div id="map" ref="map"></div>
-    <canvas id="deck-canvas" ref="canvas"></canvas></div
-></template>
+    <canvas id="deck-canvas" ref="canvas"></canvas>
+    <v-btn class="mx-2 geo-expand" fab dark small color="pink" @click="toggleMaximize">
+      <v-icon dark>{{ expanded ? 'mdi-fullscreen-exit' : 'mdi-fullscreen' }}</v-icon>
+    </v-btn>
+  </div>
+</template>
 <script>
 import * as d3 from 'd3';
 import usgeodata from '../../static/us_geo.json';
@@ -35,21 +39,30 @@ export default {
   },
   data() {
     return {
-      viewState: {
-        longitude: -98.6,
-        latitude: 36.4,
-        zoom: 4,
-        minZoom: 3,
-        maxZoom: 20,
-        pitch: 40.5,
-        bearing: 0
-      },
+      expanded: false,
+      containerWidth: 1000,
       colorRange: [
         [1, 152, 189],
         [254, 173, 84],
         [209, 55, 78]
       ]
     };
+  },
+  computed: {
+    containerClass: function() {
+      return 'ac-geo-map' + (this.expanded ? ' ac-geo-fullscreen' : '');
+    },
+    viewState: function() {
+      return {
+        longitude: -98.6,
+        latitude: 36.4,
+        zoom: this.containerWidth > 600 ? 4 : 2,
+        minZoom: 2,
+        maxZoom: 20,
+        pitch: 40.5,
+        bearing: 0
+      };
+    }
   },
   created() {
     // creating a non reactive map object
@@ -61,6 +74,7 @@ export default {
     import('mapbox-gl').then(module => {
       log.info('mapbox-gl: imported');
       mapboxgl = module.default;
+      this.containerWidth = this.$refs.container.clientWidth;
       this.$nextTick(() => {
         this.render();
       });
@@ -100,6 +114,16 @@ export default {
         }
       });
 
+      // DO this two times: first - to calculate max in bin, and set up scaleSqrt.
+      // Second - to actually render layer based on scaleSqrt
+
+      // TODO This may need to be adjusted as data is being updated
+      let maxBinValue = 100000;
+      let sqrt = d3
+        .scaleSqrt()
+        .range([0, maxBinValue])
+        .domain([0, 500]);
+
       const hexagonLayer = new HexagonLayer({
         id: 'heatmap',
         pickable: true,
@@ -110,21 +134,23 @@ export default {
         extruded: true,
         //colorDomain: [0,50000],
         getPosition: d => [d.lng, d.lat],
-        //getElevationValue: points => points.reduce((sum, p) => sum += p.val, 0), // points.length, // TODO Return sum of point values here: we have specific value associated with each coordinate point
-        getColorWeight: point => point.val,      // or here
-        colorAggregation: 'SUM',
-        getElevationWeight: point => point.val,  // And here
-        weightAggregation: 'SUM',
-        opacity: 0.5,
+        // TODO Return sum of point values here: we have specific value associated with each coordinate point
+        getElevationValue: points => sqrt(points.reduce((sum, p) => (sum += p.val), 0)),
+        getColorValue: points => sqrt(points.reduce((sum, p) => (sum += p.val), 0)),
+        //getColorWeight: point => point.val, // or here
+        //colorAggregation: 'SUM',
+        //getElevationWeight: point => point.val, // And here
+        //weightAggregation: 'SUM',
+        opacity: 0.3,
         radius: 10000,
         upperPercentile: 150,
-        onSetElevationDomain: (d) => {
-          console.log(`Got onSetElevationDomain: ${JSON.stringify(d)}`);
+        onSetElevationDomain: d => {
+          console.log(`Got 2 onSetElevationDomain: ${JSON.stringify(d)}`);
         },
-        onSetColorDomain: (d) => {
-          console.log(`Got onSetColorDomain: ${JSON.stringify(d)}`);
+        onSetColorDomain: d => {
+          console.log(`Got 2 onSetColorDomain: ${JSON.stringify(d)}`);
         },
-        onHover: ({object, x, y}) => {
+        onHover: ({ object, x, y }) => {
           //const tooltip = `${object.centroid.join(', ')}\nCount: ${object.points.length}`;
           //console.log(JSON.stringify(object));
           /* Update tooltip
@@ -133,31 +159,17 @@ export default {
         }
       });
 
+      // TODO
+
       this.deck.setProps({ layers: [hexagonLayer] });
+    },
+    toggleMaximize(){
+      this.expanded = !this.expanded;
+      this.$nextTick(() => {
+        window.dispatchEvent(new Event('resize'));
+      });
     }
+
   }
 };
 </script>
-<style scoped>
-.deck-container {
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-#map {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #e5e9ec;
-  overflow: hidden;
-}
-#deck-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-</style>

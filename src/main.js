@@ -5,6 +5,7 @@ import DefaultLayout from '~/layouts/Default.vue';
 // Relative import imporant here. Gridsom does not like import css from 'dygraphs/dist/dygraph.css'
 import '../node_modules/dygraphs/dist/dygraph.css';
 import '~/resources/scss/theme.scss';
+import '../node_modules/mapbox-gl/dist/mapbox-gl.css';
 
 export default function(Vue, { router, appOptions, head, isClient }) {
   head.link.push({
@@ -16,6 +17,13 @@ export default function(Vue, { router, appOptions, head, isClient }) {
     rel: 'stylesheet',
     href: 'https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css'
   });
+
+  /*
+  head.link.push({
+    rel: 'stylesheet',
+    href: 'https://api.tiles.mapbox.com/mapbox-gl-js/v1.9.1/mapbox-gl.css'
+  });
+  */
 
   Vue.use(VueFuse);
 
