@@ -1,6 +1,56 @@
 @import 'variables.scss';
 @import 'dbdygraphs.scss';
 
+.ac-geo-map {
+  width:100%;
+  height: 600px;
+  position: relative;
+
+  #map {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    overflow: hidden;
+  }
+  #deck-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .ac-geo-map {
+    height: 50vh;
+  }
+}
+
+@media only screen and (min-width: 600px) {
+  .ac-geo-map {
+    height: 50vh;
+  }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+  .ac-geo-map {
+    height: 500px;
+  }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+  .ac-geo-map {
+    height: 600px;
+  }
+}
+
+
 @for $i from 1 through 10 {
   $height: ($i * 10);
 

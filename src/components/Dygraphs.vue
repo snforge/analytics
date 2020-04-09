@@ -51,6 +51,7 @@ export default {
       return {
         colors: colors.getColors(this.dark, this.colorScheme),
         animatedZooms: true,
+        interactionModel: {}, // This disables pan and zoom in chart
         labelsDiv: this.$refs.dbdylabels,
         legend: 'follow',
         legendFormatter: this.legendFormatter,
@@ -61,7 +62,7 @@ export default {
         highlightSeriesBackgroundAlpha: this.dark ? 0.4 : 0.5,
         highlightSeriesBackgroundColor: this.dark ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)',
         axisLineColor: this.dark ? 'rgba(255, 255, 255, 0.3)' : 'rgb(0, 0, 0, 0.3)',
-        plotter: this.barChartPlotter
+        plotter: this.barChartPlotter,
       };
     },
     elementClass: function() {
@@ -72,6 +73,7 @@ export default {
     import('dygraphs').then(module => {
       log.info('dygraphs: imported');
       Dygraphs = module.default;
+      //  note: can use Dygraphs.defaultInteractionModel
       this.$nextTick(() => {
         this.render();
       });

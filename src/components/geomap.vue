@@ -1,5 +1,5 @@
 <template>
-  <div class="deck-container" style="height: 600px;width: 100%;">
+  <div ref="container" class="ac-geo-map">
     <div id="map" ref="map"></div>
     <canvas id="deck-canvas" ref="canvas"></canvas></div
 ></template>
@@ -35,21 +35,26 @@ export default {
   },
   data() {
     return {
-      viewState: {
-        longitude: -98.6,
-        latitude: 36.4,
-        zoom: 4,
-        minZoom: 3,
-        maxZoom: 20,
-        pitch: 40.5,
-        bearing: 0
-      },
+      containerWidth: 1000,
       colorRange: [
         [1, 152, 189],
         [254, 173, 84],
         [209, 55, 78]
       ]
     };
+  },
+  computed: {
+    viewState: function() {
+      return {
+        longitude: -98.6,
+        latitude: 36.4,
+        zoom: this.containerWidth > 600 ? 4 : 2,
+        minZoom: 2,
+        maxZoom: 20,
+        pitch: 40.5,
+        bearing: 0
+      };
+    }
   },
   created() {
     // creating a non reactive map object
@@ -61,6 +66,7 @@ export default {
     import('mapbox-gl').then(module => {
       log.info('mapbox-gl: imported');
       mapboxgl = module.default;
+      this.containerWidth = this.$refs.container.clientWidth;
       this.$nextTick(() => {
         this.render();
       });
@@ -111,20 +117,20 @@ export default {
         //colorDomain: [0,50000],
         getPosition: d => [d.lng, d.lat],
         //getElevationValue: points => points.reduce((sum, p) => sum += p.val, 0), // points.length, // TODO Return sum of point values here: we have specific value associated with each coordinate point
-        getColorWeight: point => point.val,      // or here
+        getColorWeight: point => point.val, // or here
         colorAggregation: 'SUM',
-        getElevationWeight: point => point.val,  // And here
+        getElevationWeight: point => point.val, // And here
         weightAggregation: 'SUM',
         opacity: 0.5,
         radius: 10000,
         upperPercentile: 150,
-        onSetElevationDomain: (d) => {
+        onSetElevationDomain: d => {
           console.log(`Got onSetElevationDomain: ${JSON.stringify(d)}`);
         },
-        onSetColorDomain: (d) => {
+        onSetColorDomain: d => {
           console.log(`Got onSetColorDomain: ${JSON.stringify(d)}`);
         },
-        onHover: ({object, x, y}) => {
+        onHover: ({ object, x, y }) => {
           //const tooltip = `${object.centroid.join(', ')}\nCount: ${object.points.length}`;
           //console.log(JSON.stringify(object));
           /* Update tooltip
@@ -138,26 +144,3 @@ export default {
   }
 };
 </script>
-<style scoped>
-.deck-container {
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-#map {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #e5e9ec;
-  overflow: hidden;
-}
-#deck-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-</style>
