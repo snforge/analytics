@@ -75,9 +75,14 @@ export default {
         }
       },
       chartData: [],
+      chartOptionsUS: [],
       chartDataCA: [],
+      chartOptionsCA: [],
       chartDataNewCases: [],
-      chartDataCANewCases: []
+      chartOptionsNewCases: [],
+      chartDataCANewCases: [],
+      chartOptionsCANewCases: []
+
     };
   },
   mounted: function() {
@@ -90,6 +95,8 @@ export default {
         this.pageTitle = `US Confirmed Cases @${usTrendResponse.data.at}`;
         this.pageTotal = `${usTrendResponse.data.total}`;
         this.chartOptions.labels = usTrendResponse.data.labels;
+        // this.chartOptionsUS = this.chartOptiopns;
+        //this.chartOptionsUS.labels = usTrendResponse.data.labels;
         let chartData = [];
         // Convert X to Date
         if(Array.isArray(usTrendResponse.data.data)){
@@ -99,6 +106,8 @@ export default {
       }
       let usCATrendResponse = await backendAPI.getUSCATrendData('us_CA_trend.json');
       if(usCATrendResponse.success){
+        // this.chartOptionsCA = this.chartOptiopns;
+        this.chartOptionsCA.labels = usCATrendResponse.data.labels;
         let chartDataCA = [];
         if(Array.isArray(usCATrendResponse.data.data)){
           chartDataCA = usCATrendResponse.data.data.map( x => [new Date(x[0]),x[1]]);
@@ -108,6 +117,8 @@ export default {
       let usNewCasesTrendResponse = await backendAPI.getUSNewCasesTrendData('us_new_cases_trend.json');
       if(usNewCasesTrendResponse.success){
         let chartData = [];
+        // this.chartOptionsUSNewCases = this.chartOptiopns;
+        // this.chartOptionsUSNewCases.labels = usNewCasesTrendResponse.data.labels;
         if(Array.isArray(usNewCasesTrendResponse.data.data)){
           chartData = usNewCasesTrendResponse.data.data.map( x => [new Date(x[0]),x[1]]);
         }
@@ -116,6 +127,8 @@ export default {
       let usCANewCasesTrendResponse = await backendAPI.getUSCANewCasesTrendData('us_CA_new_cases_trend.json');
       if(usCANewCasesTrendResponse.success){
         let chartData = [];
+        // this.chartOptionsCANewCases = this.chartOptiopns;
+        // this.chartOptionsCANewCases.labels = usCANewCasesTrendResponse.data.labels;
         if(Array.isArray(usCANewCasesTrendResponse.data.data)){
           chartData = usCANewCasesTrendResponse.data.data.map( x => [new Date(x[0]),x[1]]);
         }
