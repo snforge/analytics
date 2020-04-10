@@ -2,17 +2,17 @@
   <Layout>
     <v-row no-gutters>
       <v-col cols="12">
-        <geo-map></geo-map>
+
       </v-col>
     </v-row>
     <v-row no-gutters>
       <v-col>
         <v-container>
-          <div class="pa-1 mb-0" style="height: 600px;">
-            <dygraphs :data="chartData" :options="chartOptions" :dark="false" style="height: 150px;"></dygraphs>
-            <dygraphs :data="chartDataCA" :options="chartOptions" :dark="false" style="height: 150px;"></dygraphs>
-            <dygraphs :data="chartDataNewCases" :options="chartOptions" :dark="false" style="height: 150px;"></dygraphs>
-            <dygraphs :data="chartDataCANewCases" :options="chartOptions" :dark="false" style="height: 150px;"></dygraphs>
+          <div class="pa-1 mb-0" style="height: 900px;">
+            <bar-chart :filename="'us_trend.json'"> </bar-chart>
+            <bar-chart :filename="'us_CA_trend.json'"> </bar-chart>
+            <bar-chart :filename="'us_new_cases_trend.json'"> </bar-chart>
+            <bar-chart :filename="'us_CA_new_cases_trend.json'"> </bar-chart>
           </div>
         </v-container>
       </v-col>
@@ -36,12 +36,20 @@
 </template>
 
 <script>
+/*
+            <dygraphs :data="chartData" :options="chartOptions" :dark="false" style="height: 150px;"></dygraphs>
+            <dygraphs :data="chartDataCA" :options="chartOptions" :dark="false" style="height: 150px;"></dygraphs>
+            <dygraphs :data="chartDataNewCases" :options="chartOptions" :dark="false" style="height: 150px;"></dygraphs>
+            <dygraphs :data="chartDataCANewCases" :options="chartOptions" :dark="false" style="height: 150px;"></dygraphs>
+*/
+
 //import HeaderBanner from '~/components/HeaderBanner.vue';
 import DarkBanner from '~/components/DarkBanner.vue';
 import FooterBanner from '~/components/FooterBanner.vue';
 import Dygraphs from '../components/Dygraphs.vue';
 import GeoMap from '../components/geomap.vue';
 import backendAPI from '../components/backendapi';
+import BarChart from '../components/BarChart.vue';
 
 export default {
   metaInfo: {
@@ -51,14 +59,15 @@ export default {
     DarkBanner,
     FooterBanner,
     Dygraphs,
+    BarChart,
     GeoMap
   },
   props: {},
+  /* 
   data() {
     return {
       pageTitle: '',
       pageTotal: '',
-      chartFileName: '',
       chartOptions: {
         legend: 'follow',
         connectSeparatedPoints: false,
@@ -82,9 +91,8 @@ export default {
       chartOptionsNewCases: [],
       chartDataCANewCases: [],
       chartOptionsCANewCases: []
-
     };
-  },
+  }, 
   mounted: function() {
     this.getData();
   },
@@ -95,8 +103,6 @@ export default {
         this.pageTitle = `US Confirmed Cases @${usTrendResponse.data.at}`;
         this.pageTotal = `${usTrendResponse.data.total}`;
         this.chartOptions.labels = usTrendResponse.data.labels;
-        // this.chartOptionsUS = this.chartOptiopns;
-        //this.chartOptionsUS.labels = usTrendResponse.data.labels;
         let chartData = [];
         // Convert X to Date
         if(Array.isArray(usTrendResponse.data.data)){
@@ -151,7 +157,7 @@ export default {
         dthData: dthData
       };
     }
-  }
+  } */
 };
 </script>
 
