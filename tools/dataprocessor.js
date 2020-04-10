@@ -276,7 +276,7 @@ class DataProcessor {
     let jsonChartData = {
       total: currentTotal,
       at: todayColumn,
-      labels: ['Date', 'Confirmed'],
+      labels: ['Date', 'Daily New Cases'],
       data: jsonTrendData
     };
 

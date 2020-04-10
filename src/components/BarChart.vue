@@ -1,0 +1,77 @@
+<template>
+  <div class="BarChart">
+    <dygraphs :data="chartData" :options="localchartOptions" style="height: 150px;"></dygraphs>
+  </div>
+</template>
+
+<script>
+
+import backendAPI from '../components/backendapi';
+import Dygraphs from '../components/Dygraphs.vue';
+
+export default {
+  name: 'BarChart',
+  components: {
+    Dygraphs
+  },
+  props: {
+    chartData: {
+      type: Array,
+      default: null
+    },
+    chartOptions: {
+      type: Object
+    },
+    filename: String,
+    default: ''  
+  },
+  data() {
+    return {
+      locchartOptions: {
+        legend: 'follow',
+        connectSeparatedPoints: false,
+        stackedGraph: false,
+        fillGraph: false,
+        strokeWidth: 2,
+        yLabelWidth: 0,
+        colors: ['#B71C1C'],
+        labels: [],
+        highlightSeriesOpts: {
+          strokeWidth: 3,
+          strokeBorderWidth: 0,
+          highlightCircleSize: 5
+        }
+      },
+      loccharData: []
+    };
+  },
+  mounted: function() {
+    this.getData();
+  },
+  methods: {
+     async getData() {
+      console.log('Got response!');
+      let response = await backendAPI.getUSTrendData(this.filename);
+      if(response.success){
+        this.pageTitle = `US Confirmed Cases @${response.data.at}`;
+        this.pageTotal = `${response.data.total}`;
+        // this.chartOptions.labels = response.data.labels;
+           let chartData = [];
+        // Convert X to Date
+        if(Array.isArray(response.data.data)){
+          chartData = response.data.data.map( x => [new Date(x[0]),x[1]]);
+        }
+        this.chartData = chartData;
+      }
+      console.log('Got response!');
+    }
+  }
+}
+</script>
+
+<style>
+.BarChart {
+  padding: 20px;
+  background: #FFF;
+}
+</style>
