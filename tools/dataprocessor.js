@@ -19,6 +19,8 @@ const chartDataUSCATrend = path.join(staticPath, 'us_CA_trend.json');
 const chartDataUSTrendNewCases = path.join(staticPath, 'us_new_cases_trend.json');
 const chartDataUSCATrendNewCases = path.join(staticPath, 'us_CA_new_cases_trend.json');
 const chartDataUSGeo = path.join(staticPath, 'us_geo.json');
+const chartDataUSCASamMateoTrend = path.join(staticPath, 'us_CA_San_Mateo_new_cases_trend.json')
+
 const Country_Region_Field_Name = 'County_Region';
 const Province_State_Field_Name = 'County_Region'; // 'County_Region'; // 'Province_State';
 
@@ -282,6 +284,70 @@ class DataProcessor {
 
     fs.writeJsonSync(chartDataUSCATrendNewCases, jsonChartData);
     console.log(`Saved ${chartDataUSCATrendNewCases}`);
+  }
+
+  loadTimeSerioesCASanMateoNewCases() {
+    // DataLib allows to load CSV and then do group by / calculations on the data
+    // See documentation on DataLib: https://github.com/vega/datalib/wiki/API-Reference
+    let data = dl.csv(ccseTimeSeriesConfirmedUS);
+
+    logger.info(`Loaded ${data.length} entries from ${ccseTimeSeriesConfirmedUS}`);
+    let todayColumn = this.getLasDayColumn(data); //  '4/6/20'; //moment().format('M/D/YY');
+    logger.info(`Last available day:  ${todayColumn}`);
+    //console.log(dl.format.summary(data));
+
+    // Get US data
+    // See documentation on DataLib: https://github.com/vega/datalib/wiki/API-Reference
+    // This sums up total in today's column in CSV
+    let rollup = dl
+      .groupby('Province_State')
+      .summarize([{ name: todayColumn, ops: ['sum'] }])
+      .execute(data)
+      .filter(d => d['Province_State'] === 'California');
+    let currentTotal = pathOr(0, [0, `sum_${todayColumn}`], rollup);
+
+    let dataNewCases = data;
+    let dataColumns = Object.keys(data[0]).slice(11);
+    for ( let i = 1; i < dataNewCases.length; i++ )
+    {
+      for ( let j = dataColumns.length - 1; j > 0; j-- )
+      {
+        dataNewCases[i][dataColumns[j]] = dataNewCases[i][dataColumns[j]] - dataNewCases[i][dataColumns[j-1]];
+      } 
+    }
+
+    data = dataNewCases;
+   
+    // Now we need to calculate totals in each Date column in csv to see the trend
+    let dateColumns = Object.keys(data[0]).slice(11);
+      let summSpec = dateColumns.map(x => {
+      return { name: x, ops: ['sum'] };
+    });
+
+    let rollupTrend = dl
+      .groupby('Province_State')
+      .summarize(summSpec)
+      .execute(data)
+      .filter(d => d['Province_State'] === 'California');
+
+    let jsonTrendData = [];
+    jsonTrendData = dateColumns.map(x => {
+      let currDate = moment.utc(x, 'M/D/YY').valueOf();
+      let rollupColumnName = `sum_${x}`;
+      let value = rollupTrend[0][rollupColumnName] || 0;
+      return [currDate, value];
+    });
+
+    // TODO Write to JSON
+    let jsonChartData = {
+      total: currentTotal,
+      at: todayColumn,
+      labels: ['Date', 'Daily New Cases'],
+      data: jsonTrendData
+    };
+
+    fs.writeJsonSync(chartDataUSCASanMateoTrendNewCases, jsonChartData);
+    console.log(`Saved ${chartDataUSCASanMateoTrendNewCases}`);
   }
 
   processGeo() {
