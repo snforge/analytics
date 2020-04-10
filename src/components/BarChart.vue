@@ -1,6 +1,6 @@
 <template>
   <div class="BarChart">
-    <dygraphs :data="chartData" :options="localchartOptions" style="height: 150px;"></dygraphs>
+    <dygraphs :data="localChartData" :options="localChartOptions" style="height: 150px;"></dygraphs>
   </div>
 </template>
 
@@ -15,19 +15,14 @@ export default {
     Dygraphs
   },
   props: {
-    chartData: {
-      type: Array,
-      default: null
-    },
-    chartOptions: {
-      type: Object
-    },
-    filename: String,
-    default: ''  
+    filename: {
+      type: String,
+      default: ''
+    }
   },
   data() {
     return {
-      locchartOptions: {
+      localChartOptions: {
         legend: 'follow',
         connectSeparatedPoints: false,
         stackedGraph: false,
@@ -42,7 +37,7 @@ export default {
           highlightCircleSize: 5
         }
       },
-      loccharData: []
+      localChartData: []
     };
   },
   mounted: function() {
@@ -53,15 +48,13 @@ export default {
       console.log('Got response!');
       let response = await backendAPI.getUSTrendData(this.filename);
       if(response.success){
-        this.pageTitle = `US Confirmed Cases @${response.data.at}`;
-        this.pageTotal = `${response.data.total}`;
-        // this.chartOptions.labels = response.data.labels;
-           let chartData = [];
+        this.localChartOptions.labels = response.data.labels;
+        let chartData = [];
         // Convert X to Date
         if(Array.isArray(response.data.data)){
           chartData = response.data.data.map( x => [new Date(x[0]),x[1]]);
         }
-        this.chartData = chartData;
+        this.localChartData = chartData;
       }
       console.log('Got response!');
     }
