@@ -31,6 +31,9 @@ export default {
         yLabelWidth: 0,
         colors: ['#B71C1C'],
         labels: [],
+        rightGap: 5,
+        strokeBorderWidth: 0,
+        strokeBorderColor: 'black',
         highlightSeriesOpts: {
           strokeWidth: 3,
           strokeBorderWidth: 0,

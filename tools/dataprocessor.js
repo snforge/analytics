@@ -21,7 +21,12 @@ const chartDataUSCATrendNewCases = path.join(staticPath, 'us_CA_new_cases_trend.
 const chartDataUSGeo = path.join(staticPath, 'us_geo.json');
 const chartDataUSCASamMateoTrendNewCases = path.join(staticPath, 'us_CA_San_Mateo_new_cases_trend.json')
 const chartDataUSCAContraCostaTrendNewCases = path.join(staticPath, 'us_CA_Contra_Costa_new_cases_trend.json')
+const chartDataUSNVTrendNewCases = path.join(staticPath, 'us_NV_new_cases_trend.json');
+const chartDataUSNVWashoeTrendNewCases = path.join(staticPath, 'us_NV_Washoe_new_cases_trend.json')
 
+/********************************************************************
+ * DataProcessor
+ * ******************************************************************/
 class DataProcessor {
 
   data = [];
@@ -50,7 +55,10 @@ class DataProcessor {
     return '4/1/20';
   }
 
-  loadCSVData(){
+ /********************************************************************
+ * loadCSVData
+ * ******************************************************************/
+loadCSVData(){
     // DataLib allows to load CSV and then do group by / calculations on the data
     // See documentation on DataLib: https://github.com/vega/datalib/wiki/API-Reference
     this.data = dl.csv(ccseTimeSeriesConfirmedUS);
@@ -65,31 +73,37 @@ class DataProcessor {
      });
   }
 
-  writeJson(chartFileName, barLabels)
-  {
-    let nameTodayColumn = `sum_${this.todayColumn}`;
-    this.currentTotal = this.rollupTrend[0][nameTodayColumn];
-    logger.info(`currentTotal:  ${this.currentTotal}`);
+/********************************************************************
+* writeJson
+* ******************************************************************/
+writeJson(chartFileName, barLabels)
+{
+  let nameTodayColumn = `sum_${this.todayColumn}`;
+  this.currentTotal = this.rollupTrend[0][nameTodayColumn];
+  logger.info(`currentTotal:  ${this.currentTotal}`);
 
-    let jsonTrendData = [];
-    jsonTrendData = this.dateColumns.map(x => {
-      let currDate = moment.utc(x, 'M/D/YY').valueOf();
-      let rollupColumnName = `sum_${x}`;
-      let value = this.rollupTrend[0][rollupColumnName] || 0;
-      return [currDate, value];
-    });
+  let jsonTrendData = [];
+  jsonTrendData = this.dateColumns.map(x => {
+    let currDate = moment.utc(x, 'M/D/YY').valueOf();
+    let rollupColumnName = `sum_${x}`;
+    let value = this.rollupTrend[0][rollupColumnName] || 0;
+    return [currDate, value];
+  });
 
-    let jsonChartData = {
-      total: this.currentTotal,
-      at: this.todayColumn,
-      labels: barLabels,
-      data: jsonTrendData
-    };
+  let jsonChartData = {
+    total: this.currentTotal,
+    at: this.todayColumn,
+    labels: barLabels,
+    data: jsonTrendData
+  };
 
-    fs.writeJsonSync(chartFileName, jsonChartData);
-    console.log(`Saved ${chartDataUSTrend}`);
-  }
+  fs.writeJsonSync(chartFileName, jsonChartData);
+  console.log(`Saved ${chartDataUSTrend}`);
+}
 
+/********************************************************************
+* loadTimeSeries
+* ******************************************************************/
   loadTimeSeries() {
 
     this.loadCSVData();
@@ -102,6 +116,9 @@ class DataProcessor {
     this.writeJson(chartDataUSTrend, ['Date', 'Total in US']);
  }
 
+/********************************************************************
+* loadTimeSeriesCA
+* ******************************************************************/
   loadTimeSeriesCA() {
    
     this.loadCSVData();
@@ -115,6 +132,9 @@ class DataProcessor {
     this.writeJson(chartDataUSCATrend, ['Date', 'Total in California']);
   }
 
+/********************************************************************
+* loadTimeSeriesNewCases
+* ******************************************************************/
   loadTimeSeriesNewCases() {
 
     this.loadCSVData();
@@ -138,6 +158,9 @@ class DataProcessor {
    this.writeJson(chartDataUSTrendNewCases, ['Date', 'Daily New Cases in US']);
   }
 
+/********************************************************************
+* loadTimeSeriesNewCases
+* ******************************************************************/
   loadTimeSeriesCANewCases() {
 
     this.loadCSVData();
@@ -161,6 +184,9 @@ class DataProcessor {
     this.writeJson(chartDataUSCATrendNewCases, ['Date', 'Daily New Cases in CA']);
   }
 
+/********************************************************************
+* loadTimeSerioesCASanMateoNewCases
+* ******************************************************************/  
   loadTimeSerioesCASanMateoNewCases() {
 
     this.loadCSVData();
@@ -184,6 +210,9 @@ class DataProcessor {
    this.writeJson(chartDataUSCASamMateoTrendNewCases, ['Date', 'Daily New Cases in San Mateo']); 
   }
 
+/********************************************************************
+* loadTimeSerioesCAContraCostaNewCases
+* ******************************************************************/ 
   loadTimeSerioesCAContraCostaNewCases() {
 
     this.loadCSVData();
@@ -207,6 +236,61 @@ class DataProcessor {
     this.writeJson(chartDataUSCAContraCostaTrendNewCases,['Date', 'Daily New Cases in Contra Costa']);
   }
 
+/********************************************************************
+* loadTimeSeriesNVNewCases
+* ******************************************************************/   
+  loadTimeSeriesNVNewCases() {
+
+    this.loadCSVData();
+
+    let dataNewCases = this.data;
+    let dataColumns = Object.keys(dataNewCases[0]).slice(11);
+    for ( let i = 1; i < dataNewCases.length; i++ )
+    {
+      for ( let j = dataColumns.length - 1; j > 0; j-- )
+      {
+        dataNewCases[i][dataColumns[j]] = dataNewCases[i][dataColumns[j]] - dataNewCases[i][dataColumns[j-1]];
+      } 
+    }
+
+    this.rollupTrend = dl
+      .groupby('Province_State')
+      .summarize(this.summSpec)
+      .execute(dataNewCases)
+      .filter(d => d['Province_State'] === 'Nevada');
+
+    this.writeJson(chartDataUSNVTrendNewCases, ['Date', 'Daily New Cases in NV']);
+  }
+
+/********************************************************************
+* loadTimeSerioesNVWashoeNewCases
+* ******************************************************************/ 
+  loadTimeSerioesNVWashoeNewCases() {
+
+    this.loadCSVData();
+
+    let dataNewCases = this.data;
+    let dataColumns = Object.keys(dataNewCases[0]).slice(11);
+    for ( let i = 1; i < dataNewCases.length; i++ )
+    {
+      for ( let j = dataColumns.length - 1; j > 0; j-- )
+      {
+        dataNewCases[i][dataColumns[j]] = dataNewCases[i][dataColumns[j]] - dataNewCases[i][dataColumns[j-1]];
+      } 
+    }
+   
+    this.rollupTrend = dl
+      .groupby('Admin2')
+      .summarize(this.summSpec)
+      .execute(this.data)
+      .filter(function(d) {return d['Admin2'] == 'Washoe'});
+
+    this.writeJson(chartDataUSNVWashoeTrendNewCases,['Date', 'Daily New Cases in Washoe']);
+  }
+
+/********************************************************************
+* processGeo
+* ******************************************************************/ 
   processGeo() {
 
     this.loadCSVData();
