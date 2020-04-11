@@ -23,6 +23,7 @@
             <bar-chart :filename="'us_CA_Contra_Costa_new_cases_trend.json'"> </bar-chart>
     
           </div>
+          </div> <geo-map> </geo-map>
         </v-container>
       </v-col>
     </v-row>
