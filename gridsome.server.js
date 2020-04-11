@@ -113,6 +113,7 @@ module.exports = function(api) {
     dataprocessor.loadTimeSeriesNewCases();
     dataprocessor.loadTimeSeriesCANewCases();
     dataprocessor.loadTimeSerioesCASanMateoNewCases();
+    dataprocessor.loadTimeSerioesCAContraCostaNewCases();
     dataprocessor.processGeo();
 
     // Just main page for now

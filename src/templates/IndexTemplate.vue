@@ -8,12 +8,20 @@
     <v-row no-gutters>
       <v-col>
         <v-container>
-          <div class="pa-1 mb-0" style="height: 1100px;">
+          <div class="pa-1 mb-0" style="height: 1400px;">
+             US Confirmed Cases. Total.
             <bar-chart :filename="'us_trend.json'"> </bar-chart>
+             California Confirmed Cases. Total.
             <bar-chart :filename="'us_CA_trend.json'"> </bar-chart>
+             US Daily New Confirmed Cases 
             <bar-chart :filename="'us_new_cases_trend.json'"> </bar-chart>
+             California Daily New Confirmed Cases
             <bar-chart :filename="'us_CA_new_cases_trend.json'"> </bar-chart>
+             San Mateo California  Daily New Confirmed Cases
             <bar-chart :filename="'us_CA_San_Mateo_new_cases_trend.json'"> </bar-chart>
+             Contra Costa California  Daily New Confirmed Cases
+            <bar-chart :filename="'us_CA_Contra_Costa_new_cases_trend.json'"> </bar-chart>
+    
           </div>
         </v-container>
       </v-col>
