@@ -108,6 +108,7 @@ module.exports = function(api) {
   api.createPages(async ({ graphql, createPage }) => {
 
     // First, process data
+    dataprocessor.loadCSVData();
     dataprocessor.loadTimeSeries();
     dataprocessor.loadTimeSeriesCA(); 
     dataprocessor.loadTimeSeriesNewCases();

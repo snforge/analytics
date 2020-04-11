@@ -22,10 +22,14 @@ const chartDataUSGeo = path.join(staticPath, 'us_geo.json');
 const chartDataUSCASamMateoTrendNewCases = path.join(staticPath, 'us_CA_San_Mateo_new_cases_trend.json')
 const chartDataUSCAContraCostaTrendNewCases = path.join(staticPath, 'us_CA_Contra_Costa_new_cases_trend.json')
 
-const Country_Region_Field_Name = 'County_Region';
-const Province_State_Field_Name = 'County_Region'; // 'County_Region'; // 'Province_State';
-
 class DataProcessor {
+
+  data = [];
+  todayColumn = '';
+  dataColums;
+  summSpec;
+  rollupTrend;
+
   constructor() {
     // TODO
   }
@@ -46,205 +50,100 @@ class DataProcessor {
     return '4/1/20';
   }
 
-  loadTimeSeries() {
+  loadCSVData(){
     // DataLib allows to load CSV and then do group by / calculations on the data
     // See documentation on DataLib: https://github.com/vega/datalib/wiki/API-Reference
-    let data = dl.csv(ccseTimeSeriesConfirmedUS);
+    this.data = dl.csv(ccseTimeSeriesConfirmedUS);
+    logger.info(`Loaded ${this.data.length} entries from ${ccseTimeSeriesConfirmedUS}`);
+    this.todayColumn = this.getLasDayColumn(this.data); //  '4/6/20'; //moment().format('M/D/YY');
+    logger.info(`Last available day:  ${this.todayColumn}`); 
 
-    logger.info(`Loaded ${data.length} entries from ${ccseTimeSeriesConfirmedUS}`);
-    let todayColumn = this.getLasDayColumn(data); //  '4/6/20'; //moment().format('M/D/YY');
-    logger.info(`Last available day:  ${todayColumn}`);
-    //console.log(dl.format.summary(data));
+     // Now we need to calculate totals in each Date column in csv to see the trend
+    this.dateColumns = Object.keys(this.data[0]).slice(11);
+    this.summSpec = this.dateColumns.map(x => {
+       return { name: x, ops: ['sum'] };
+     });
+  }
 
-    // Get US data
-    // See documentation on DataLib: https://github.com/vega/datalib/wiki/API-Reference
-    // This sums up total in today's column in CSV
-    let rollup = dl
-      .groupby('Country_Region')
-      .summarize([{ name: todayColumn, ops: ['sum'] }])
-      .execute(data);
-    let currentTotal = pathOr(0, [0, `sum_${todayColumn}`], rollup);
-
-    // Now we need to calculate totals in each Date column in csv to see the trend
-    let dateColumns = Object.keys(data[0]).slice(11);
-    let summSpec = dateColumns.map(x => {
-      return { name: x, ops: ['sum'] };
-    });
-
-    let rollupTrend = dl
-      .groupby('Country_Region')
-      .summarize(summSpec)
-      .execute(data);
+  writeJson(chartFileName, barLabels)
+  {
+    let nameTodayColumn = `sum_${this.todayColumn}`;
+    this.currentTotal = this.rollupTrend[0][nameTodayColumn];
+    logger.info(`currentTotal:  ${this.currentTotal}`);
 
     let jsonTrendData = [];
-    jsonTrendData = dateColumns.map(x => {
+    jsonTrendData = this.dateColumns.map(x => {
       let currDate = moment.utc(x, 'M/D/YY').valueOf();
       let rollupColumnName = `sum_${x}`;
-      let value = rollupTrend[0][rollupColumnName] || 0;
+      let value = this.rollupTrend[0][rollupColumnName] || 0;
       return [currDate, value];
     });
 
-    // Group by State, County; filter specific state
-    let rollupSC = dl
-      .groupby(['Province_State', 'Admin2'])
-      .summarize([{ name: todayColumn, ops: ['sum'] }])
-      .execute(data)
-      .filter(d => d['Province_State'] === 'California');
-
-    // TODO Write to JSON
     let jsonChartData = {
-      total: currentTotal,
-      at: todayColumn,
-      labels: ['Date', 'Confirmed'],
+      total: this.currentTotal,
+      at: this.todayColumn,
+      labels: barLabels,
       data: jsonTrendData
     };
 
-    fs.writeJsonSync(chartDataUSTrend, jsonChartData);
+    fs.writeJsonSync(chartFileName, jsonChartData);
     console.log(`Saved ${chartDataUSTrend}`);
   }
 
+  loadTimeSeries() {
+
+    this.loadCSVData();
+
+    this.rollupTrend = dl
+      .groupby('Country_Region')
+      .summarize(this.summSpec)
+      .execute(this.data);
+ 
+    this.writeJson(chartDataUSTrend, ['Date', 'Total in US']);
+ }
+
   loadTimeSeriesCA() {
-    // DataLib allows to load CSV and then do group by / calculations on the data
-    // See documentation on DataLib: https://github.com/vega/datalib/wiki/API-Reference
-    let data = dl.csv(ccseTimeSeriesConfirmedUS);
+   
+    this.loadCSVData();
 
-    logger.info(`Loaded ${data.length} entries from ${ccseTimeSeriesConfirmedUS}`);
-    let todayColumn = this.getLasDayColumn(data); //  '4/6/20'; //moment().format('M/D/YY');
-    logger.info(`Last available day:  ${todayColumn}`);
-    
-    // See documentation on DataLib: https://github.com/vega/datalib/wiki/API-Reference
-    // This sums up total in today's column in CSV
-    let rollup = dl
+    this.rollupTrend = dl
       .groupby('Province_State')
-      .summarize([{ name: todayColumn, ops: ['sum'] }])
-      .execute(data)
-      .filter(d => d['Province_State'] === 'California');
-    let currentTotal = pathOr(0, [0, `sum_${todayColumn}`], rollup);
-    logger.info(`CA currentTotal = ${currentTotal}`);
-
-    // Now we need to calculate totals in each Date column in csv to see the trend
-    let dateColumns = Object.keys(data[0]).slice(11);
-    let summSpec = dateColumns.map(x => {
-      return { name: x, ops: ['sum'] };
-    });
-
-    let rollupTrend = dl
-      .groupby('Province_State')
-      .summarize(summSpec)
-      .execute(data)
+      .summarize(this.summSpec)
+      .execute(this.data)
       .filter(d => d['Province_State'] === 'California');
 
-    let jsonTrendData = [];
-    jsonTrendData = dateColumns.map(x => {
-      let currDate = moment.utc(x, 'M/D/YY').valueOf();
-      let rollupColumnName = `sum_${x}`;
-      let value = rollupTrend[0][rollupColumnName] || 0;
-      return [currDate, value];
-    });
-    logger.info(`CA rollupTrend.length = ${rollupTrend.length}`);
-    logger.info(`CA rollupTrend[0] = ${rollupTrend[0]}`);
-
-    // TODO Write to JSON
-    let jsonChartData = {
-      total: currentTotal,
-      at: todayColumn,
-      labels: ['Date', 'Confirmed'],
-      data: jsonTrendData
-    };
-
-    fs.writeJsonSync(chartDataUSCATrend, jsonChartData);
-    logger.info(`CA Saved ${chartDataUSTrend}`);
+    this.writeJson(chartDataUSCATrend, ['Date', 'Total in California']);
   }
 
   loadTimeSeriesNewCases() {
-    // DataLib allows to load CSV and then do group by / calculations on the data
-    // See documentation on DataLib: https://github.com/vega/datalib/wiki/API-Reference
-    let data = dl.csv(ccseTimeSeriesConfirmedUS);
 
-    logger.info(`Loaded ${data.length} entries from ${ccseTimeSeriesConfirmedUS}`);
-    let todayColumn = this.getLasDayColumn(data); //  '4/6/20'; //moment().format('M/D/YY');
-    logger.info(`Last available day:  ${todayColumn}`);
-    //console.log(dl.format.summary(data));
-
-    // Get US data
-    // See documentation on DataLib: https://github.com/vega/datalib/wiki/API-Reference
-    // This sums up total in today's column in CSV
-    let rollup = dl
-      .groupby('Country_Region')
-      .summarize([{ name: todayColumn, ops: ['sum'] }])
-      .execute(data);
-    let currentTotal = pathOr(0, [0, `sum_${todayColumn}`], rollup);
-
-    let dataNewCases = data;
-    let dataColumns = Object.keys(data[0]).slice(11);
+    this.loadCSVData();
+     
+    let dataNewCases = this.data;
+    let dataColumns = Object.keys(dataNewCases[0]).slice(11);
     for ( let i = 1; i < dataNewCases.length; i++ )
-    {
+    { 
       // logger.info(`NEW CASES :  ${dataNewCases[0].length}`);
       for ( let j = dataColumns.length - 1; j > 0; j-- )
       {
-        // logger.info(`dataColumns[j]:  ${dataColumns[j]}`); 
-        // logger.info(`dataNewCases[i][dataColumns[j]]):  ${dataNewCases[i][dataColumns[j]]}`);
         dataNewCases[i][dataColumns[j]] = dataNewCases[i][dataColumns[j]] - dataNewCases[i][dataColumns[j-1]];
-        // logger.info(`dataNewCases[i,dataColumns[j]]:  ${dataNewCases[i][dataColumns[j]}`);
-        // logger.info(`dataNewCases[i,dataColumns[j-1]]:  ${dataNewCases[i][dataColumns[j-1]]}`); 
       } 
     }
 
-    data = dataNewCases;
-   
-    // Now we need to calculate totals in each Date column in csv to see the trend
-    let dateColumns = Object.keys(data[0]).slice(11);
-      let summSpec = dateColumns.map(x => {
-      return { name: x, ops: ['sum'] };
-    });
-
-    let rollupTrend = dl
+    this.rollupTrend = dl
       .groupby('Country_Region')
-      .summarize(summSpec)
-      .execute(data);
+      .summarize(this.summSpec)
+      .execute(dataNewCases);
 
-    let jsonTrendData = [];
-    jsonTrendData = dateColumns.map(x => {
-      let currDate = moment.utc(x, 'M/D/YY').valueOf();
-      let rollupColumnName = `sum_${x}`;
-      let value = rollupTrend[0][rollupColumnName] || 0;
-      return [currDate, value];
-    });
-
-    // TODO Write to JSON
-    let jsonChartData = {
-      total: currentTotal,
-      at: todayColumn,
-      labels: ['Date', 'Confirmed'],
-      data: jsonTrendData
-    };
-
-    fs.writeJsonSync(chartDataUSTrendNewCases, jsonChartData);
-    console.log(`Saved ${chartDataUSTrendNewCases}`);
+   this.writeJson(chartDataUSTrendNewCases, ['Date', 'Daily New Cases in US']);
   }
 
   loadTimeSeriesCANewCases() {
-    // DataLib allows to load CSV and then do group by / calculations on the data
-    // See documentation on DataLib: https://github.com/vega/datalib/wiki/API-Reference
-    let data = dl.csv(ccseTimeSeriesConfirmedUS);
 
-    logger.info(`Loaded ${data.length} entries from ${ccseTimeSeriesConfirmedUS}`);
-    let todayColumn = this.getLasDayColumn(data); //  '4/6/20'; //moment().format('M/D/YY');
-    logger.info(`Last available day:  ${todayColumn}`);
-    //console.log(dl.format.summary(data));
+    this.loadCSVData();
 
-    // Get US data
-    // See documentation on DataLib: https://github.com/vega/datalib/wiki/API-Reference
-    // This sums up total in today's column in CSV
-    let rollup = dl
-      .groupby('Province_State')
-      .summarize([{ name: todayColumn, ops: ['sum'] }])
-      .execute(data)
-      .filter(d => d['Province_State'] === 'California');
-    let currentTotal = pathOr(0, [0, `sum_${todayColumn}`], rollup);
-
-    let dataNewCases = data;
-    let dataColumns = Object.keys(data[0]).slice(11);
+    let dataNewCases = this.data;
+    let dataColumns = Object.keys(dataNewCases[0]).slice(11);
     for ( let i = 1; i < dataNewCases.length; i++ )
     {
       for ( let j = dataColumns.length - 1; j > 0; j-- )
@@ -253,62 +152,21 @@ class DataProcessor {
       } 
     }
 
-    data = dataNewCases;
-   
-    // Now we need to calculate totals in each Date column in csv to see the trend
-    let dateColumns = Object.keys(data[0]).slice(11);
-      let summSpec = dateColumns.map(x => {
-      return { name: x, ops: ['sum'] };
-    });
-
-    let rollupTrend = dl
+    this.rollupTrend = dl
       .groupby('Province_State')
-      .summarize(summSpec)
-      .execute(data)
+      .summarize(this.summSpec)
+      .execute(dataNewCases)
       .filter(d => d['Province_State'] === 'California');
 
-    let jsonTrendData = [];
-    jsonTrendData = dateColumns.map(x => {
-      let currDate = moment.utc(x, 'M/D/YY').valueOf();
-      let rollupColumnName = `sum_${x}`;
-      let value = rollupTrend[0][rollupColumnName] || 0;
-      return [currDate, value];
-    });
-
-    // TODO Write to JSON
-    let jsonChartData = {
-      total: currentTotal,
-      at: todayColumn,
-      labels: ['Date', 'Daily New Cases'],
-      data: jsonTrendData
-    };
-
-    fs.writeJsonSync(chartDataUSCATrendNewCases, jsonChartData);
-    console.log(`Saved ${chartDataUSCATrendNewCases}`);
+    this.writeJson(chartDataUSCATrendNewCases, ['Date', 'Daily New Cases in CA']);
   }
 
   loadTimeSerioesCASanMateoNewCases() {
-    // DataLib allows to load CSV and then do group by / calculations on the data
-    // See documentation on DataLib: https://github.com/vega/datalib/wiki/API-Reference
-    let data = dl.csv(ccseTimeSeriesConfirmedUS);
 
-    logger.info(`Loaded ${data.length} entries from ${ccseTimeSeriesConfirmedUS}`);
-    let todayColumn = this.getLasDayColumn(data); //  '4/6/20'; //moment().format('M/D/YY');
-    logger.info(`Last available day:  ${todayColumn}`);
-    //console.log(dl.format.summary(data));
+    this.loadCSVData();
 
-    // Get US data
-    // See documentation on DataLib: https://github.com/vega/datalib/wiki/API-Reference
-    // This sums up total in today's column in CSV
-    let rollup = dl
-      .groupby('Province_State')
-      .summarize([{ name: todayColumn, ops: ['sum'] }])
-      .execute(data)
-      .filter(d => d['Province_State'] === 'California');
-    let currentTotal = pathOr(0, [0, `sum_${todayColumn}`], rollup);
-
-    let dataNewCases = data;
-    let dataColumns = Object.keys(data[0]).slice(11);
+    let dataNewCases = this.data;
+    let dataColumns = Object.keys(dataNewCases[0]).slice(11);
     for ( let i = 1; i < dataNewCases.length; i++ )
     {
       for ( let j = dataColumns.length - 1; j > 0; j-- )
@@ -317,62 +175,21 @@ class DataProcessor {
       } 
     }
 
-    data = dataNewCases;
-   
-    // Now we need to calculate totals in each Date column in csv to see the trend
-    let dateColumns = Object.keys(data[0]).slice(11);
-      let summSpec = dateColumns.map(x => {
-      return { name: x, ops: ['sum'] };
-    });
-
-    let rollupTrend = dl
+    this.rollupTrend = dl
       .groupby('Admin2')
-      .summarize(summSpec)
-      .execute(data)
+      .summarize(this.summSpec)
+      .execute(dataNewCases)
       .filter(function(d) {return d['Admin2'] == 'San Mateo'});
 
-    let jsonTrendData = [];
-    jsonTrendData = dateColumns.map(x => {
-      let currDate = moment.utc(x, 'M/D/YY').valueOf();
-      let rollupColumnName = `sum_${x}`;
-      let value = rollupTrend[0][rollupColumnName] || 0;
-      return [currDate, value];
-    });
-
-    // TODO Write to JSON
-    let jsonChartData = {
-      total: currentTotal,
-      at: todayColumn,
-      labels: ['Date', 'Daily New Cases'],
-      data: jsonTrendData
-    };
-
-    fs.writeJsonSync(chartDataUSCASamMateoTrendNewCases, jsonChartData);
-    console.log(`Saved ${chartDataUSCASamMateoTrendNewCases}`);
+   this.writeJson(chartDataUSCASamMateoTrendNewCases, ['Date', 'Daily New Cases in San Mateo']); 
   }
 
   loadTimeSerioesCAContraCostaNewCases() {
-    // DataLib allows to load CSV and then do group by / calculations on the data
-    // See documentation on DataLib: https://github.com/vega/datalib/wiki/API-Reference
-    let data = dl.csv(ccseTimeSeriesConfirmedUS);
 
-    logger.info(`Loaded ${data.length} entries from ${ccseTimeSeriesConfirmedUS}`);
-    let todayColumn = this.getLasDayColumn(data); //  '4/6/20'; //moment().format('M/D/YY');
-    logger.info(`Last available day:  ${todayColumn}`);
-    //console.log(dl.format.summary(data));
+    this.loadCSVData();
 
-    // Get US data
-    // See documentation on DataLib: https://github.com/vega/datalib/wiki/API-Reference
-    // This sums up total in today's column in CSV
-    let rollup = dl
-      .groupby('Province_State')
-      .summarize([{ name: todayColumn, ops: ['sum'] }])
-      .execute(data)
-      .filter(d => d['Province_State'] === 'California');
-    let currentTotal = pathOr(0, [0, `sum_${todayColumn}`], rollup);
-
-    let dataNewCases = data;
-    let dataColumns = Object.keys(data[0]).slice(11);
+    let dataNewCases = this.data;
+    let dataColumns = Object.keys(dataNewCases[0]).slice(11);
     for ( let i = 1; i < dataNewCases.length; i++ )
     {
       for ( let j = dataColumns.length - 1; j > 0; j-- )
@@ -380,54 +197,27 @@ class DataProcessor {
         dataNewCases[i][dataColumns[j]] = dataNewCases[i][dataColumns[j]] - dataNewCases[i][dataColumns[j-1]];
       } 
     }
-
-    data = dataNewCases;
    
-    // Now we need to calculate totals in each Date column in csv to see the trend
-    let dateColumns = Object.keys(data[0]).slice(11);
-      let summSpec = dateColumns.map(x => {
-      return { name: x, ops: ['sum'] };
-    });
-
-    let rollupTrend = dl
+    this.rollupTrend = dl
       .groupby('Admin2')
-      .summarize(summSpec)
-      .execute(data)
+      .summarize(this.summSpec)
+      .execute(this.data)
       .filter(function(d) {return d['Admin2'] == 'Contra Costa'});
 
-    let jsonTrendData = [];
-    jsonTrendData = dateColumns.map(x => {
-      let currDate = moment.utc(x, 'M/D/YY').valueOf();
-      let rollupColumnName = `sum_${x}`;
-      let value = rollupTrend[0][rollupColumnName] || 0;
-      return [currDate, value];
-    });
-
-    // TODO Write to JSON
-    let jsonChartData = {
-      total: currentTotal,
-      at: todayColumn,
-      labels: ['Date', 'Daily New Cases'],
-      data: jsonTrendData
-    };
-
-    fs.writeJsonSync(chartDataUSCAContraCostaTrendNewCases, jsonChartData);
-    console.log(`Saved ${chartDataUSCAContraCostaTrendNewCases}`);
+    this.writeJson(chartDataUSCAContraCostaTrendNewCases,['Date', 'Daily New Cases in Contra Costa']);
   }
 
   processGeo() {
-    // DataLib allows to load CSV and then do group by / calculations on the data
-    // See documentation on DataLib: https://github.com/vega/datalib/wiki/API-Reference
-    let data = dl.csv(ccseTimeSeriesConfirmedUS);
-    let todayColumn = this.getLasDayColumn(data); //  '4/6/20'; //moment().format('M/D/YY');
-    logger.info(`Last available day:  ${todayColumn}`);
+
+    this.loadCSVData();
+    
     let jsonGeoData = [];
 
-    for (let i = 0; i < data.length; i++) {
-      let entry = data[i];
+    for (let i = 0; i < this.data.length; i++) {
+      let entry = this.data[i];
       let lat = pathOr(null, ['Lat'], entry);
       let lng = pathOr(null, ['Long_'], entry);
-      let val = pathOr(0, [todayColumn], entry);
+      let val = pathOr(0, [this.todayColumn], entry);
       if (lat && lng && val) {
         jsonGeoData.push({
           lat: lat,
