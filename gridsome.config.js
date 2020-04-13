@@ -5,7 +5,7 @@
 // To restart press CTRL + C in terminal and run `gridsome develop`
 
 module.exports = {
-  siteName: 'Gridsome',
+  siteName: 'Analytics',
   siteUrl: 'https://snforge.github.io',
   pathPrefix: '/analytics',
   plugins: [

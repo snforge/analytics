@@ -84,7 +84,7 @@
     <v-app-bar :clipped-left="$vuetify.breakpoint.lgAndUp" app dark dense class="gb-toolbar">
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title style="width: 300px" class="ml-0 pl-4">
-        <span class="hidden-sm-and-down">analytics</span>
+        <span class="hidden-sm-and-down">Home</span>
       </v-toolbar-title>
       <v-spacer />
 
