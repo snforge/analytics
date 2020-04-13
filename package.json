@@ -6,7 +6,9 @@
     "build": "gridsome build",
     "develop": "gridsome develop",
     "develop-debug": "node --inspect-brk=9229 node_modules/gridsome/bin/gridsome.js develop",
-    "explore": "gridsome explore"
+    "explore": "gridsome explore",
+    "getdata": "rimraf ./datasrc/COVID-19 && git clone https://github.com/CSSEGISandData/COVID-19 ./datasrc/COVID-19 && yarn run copydata",
+    "copydata": "copyfiles -f \"./datasrc/COVID-19/csse_covid_19_data/csse_covid_19_time_series/*\" ./data/csse_covid_19_time_series"
   },
   "dependencies": {
     "@gridsome/source-filesystem": "^0.6.2",
@@ -26,7 +28,10 @@
     "loglevel": "^1.6.7",
     "moment": "^2.24.0",
     "mapbox-gl": "^1.9.1",
-    "deck.gl": "^8.1.1"
+    "deck.gl": "^8.1.1",
+    "rimraf": "^3.0.2",
+    "copyfiles": "^2.2.0"
+
   },
   "devDependencies": {
     "fs-extra": "^9.0.0",
