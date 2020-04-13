@@ -26,7 +26,11 @@ export default {
     },
     options: {
       type: Object
-    }
+    },
+    barOpacity: {
+      type: Number,
+      default: 1
+    },
   },
   data() {
     return {
@@ -179,7 +183,7 @@ export default {
       var points = e.points;
       var y_bottom = e.dygraph.toDomYCoord(0);
 
-      let opColor = colors.hex2RGBA(e.color, this.opacity);
+      let opColor = colors.hex2RGBA(e.color, this.barOpacity);
       ctx.fillStyle = opColor; //e.color;
       ctx.strokeStyle = opColor; //e.color;
 

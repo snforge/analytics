@@ -5,6 +5,7 @@ const slugify = require('@sindresorhus/slugify');
 const _ = require('lodash');
 const fs = require('fs');
 const dataprocessor = require('./tools/dataprocessor');
+const marketData = require('./tools/marketdata');
 
 // TODO Revisit
 function buildSearchIndex(courses){
@@ -119,6 +120,9 @@ module.exports = function(api) {
     dataprocessor.loadTimeSerioesNVWashoeNewCases();
     dataprocessor.processGeo();
     dataprocessor.loadUnemploymentTrend();
+
+    // Test market
+    await marketData.loadAllData();
 
     // Just main page for now
     createPage({
