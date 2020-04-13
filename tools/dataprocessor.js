@@ -322,6 +322,9 @@ writeJson(chartFileName, barLabels)
 
 /********************************************************************
 * loadUnemploymentTrend
+* Data format:
+* .Results.series.data[0..M]
+* [ {year:"2020", periodName:"March", value:"4.4"}, {...}, { 2010 ...}]
 * ******************************************************************/  
 
   loadUnemploymentTrend() {
