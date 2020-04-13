@@ -1,3 +1,10 @@
+<template>
+  <Layout>
+    <h1>About us</h1>
+    <p>Some text</p>
+  </Layout>
+</template>
+
 <script>
 
 /*
@@ -15,6 +22,9 @@ https://api.bls.gov/publicAPI/v2/timeseries/data/?seriesid=LNS14000000&registrat
 
 */
 export default {
-    
+  metaInfo: {
+    title: 'bureau of labor statistics'
+  }
 }
+
 </script>
