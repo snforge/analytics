@@ -8,7 +8,7 @@
     <v-row no-gutters>
       <v-col>
         <v-container>
-          <div class="pa-1 mb-0" style="height: 1800px;">
+          <div class="pa-1 mb-0" style="height: 2000px;">
              US Confirmed Cases. Total.
             <bar-chart :filename="'us_trend.json'"> </bar-chart>
              California Confirmed Cases. Total.
@@ -25,6 +25,8 @@
             <bar-chart :filename="'us_NV_new_cases_trend.json'"> </bar-chart>
              Washoe Nevada Daily New Confirmed Cases
             <bar-chart :filename="'us_NV_Washoe_new_cases_trend.json'"> </bar-chart>
+             US Unemployment Rate (from Buareu of Labor Statistics)
+             <bar-chart :filename="'unemployment_trend.json'"> </bar-chart>
  
           </div>
           </div> <geo-map> </geo-map>

@@ -10,19 +10,22 @@ const moment = require('moment');
 const logger = getLogger('DATAPROCESSOR');
 const { pathOr } = require('ramda');
 const dataPath = path.join(__dirname, '..', 'data');
+const staticPath = path.join(__dirname, '..', 'static');
+const financePath = path.join(dataPath, 'finance');
+
 const ccseTimeSeriesConfirmedUS = path.join(dataPath, 'csse_covid_19_time_series', 'time_series_covid19_confirmed_US.csv');
 const ccseTimeSeriesConfirmedUSCA = path.join(dataPath, 'csse_covid_19_time_series', 'time_series_covid19_confirmed_US_CA test.csv');
-
-const staticPath = path.join(__dirname, '..', 'static');
 const chartDataUSTrend = path.join(staticPath, 'us_trend.json');
 const chartDataUSCATrend = path.join(staticPath, 'us_CA_trend.json');
 const chartDataUSTrendNewCases = path.join(staticPath, 'us_new_cases_trend.json');
 const chartDataUSCATrendNewCases = path.join(staticPath, 'us_CA_new_cases_trend.json');
-const chartDataUSGeo = path.join(staticPath, 'us_geo.json');
-const chartDataUSCASamMateoTrendNewCases = path.join(staticPath, 'us_CA_San_Mateo_new_cases_trend.json')
 const chartDataUSCAContraCostaTrendNewCases = path.join(staticPath, 'us_CA_Contra_Costa_new_cases_trend.json')
+const chartDataUSCASamMateoTrendNewCases = path.join(staticPath, 'us_CA_San_Mateo_new_cases_trend.json')
 const chartDataUSNVTrendNewCases = path.join(staticPath, 'us_NV_new_cases_trend.json');
-const chartDataUSNVWashoeTrendNewCases = path.join(staticPath, 'us_NV_Washoe_new_cases_trend.json')
+const chartDataUSNVWashoeTrendNewCases = path.join(staticPath, 'us_NV_Washoe_new_cases_trend.json');
+const chartDataUSGeo = path.join(staticPath, 'us_geo.json');
+const unemploymentTrendFileName = path.join(staticPath, 'unemployment_trend.json');
+const unemploymentRawTrendFileName = path.join(financePath, 'unemployment_bls_response.json')
 
 /********************************************************************
  * DataProcessor
@@ -314,6 +317,41 @@ writeJson(chartFileName, barLabels)
     fs.writeJsonSync(chartDataUSGeo, jsonGeoData);
     console.log(`Saved ${chartDataUSGeo}`);
   }
+
+
+
+/********************************************************************
+* loadUnemploymentTrend
+* ******************************************************************/  
+
+  loadUnemploymentTrend() {
+
+    let rawData = dl.json(unemploymentRawTrendFileName);
+    let rawDataYers = rawData.Results.series[0].data;
+
+    let jsonTrendData = rawDataYers.map(x => {
+      let currDate = x.periodName + "/" + x.year;
+      let currDateNum = moment.utc(currDate, 'MMM/YYYY').valueOf();
+      let value = parseFloat(x.value);
+      return [currDateNum, value];
+    })
+  
+    let jsonLen = jsonTrendData.length;
+    let jsonTrendDataChart = [];
+    for (let i = 0; i < jsonLen; i++) {
+      jsonTrendDataChart[i] = jsonTrendData[jsonLen-1-i];
+    }
+  
+    let jsonChartData = {
+      total: 0,
+      at: this.todayColumn,
+      labels: ["Date", "Millions"],
+      data: jsonTrendDataChart
+    };      
+    fs.writeJsonSync(unemploymentTrendFileName, jsonChartData);
+    console.log(`Saved ${unemploymentTrendFileName}`);
+  }
+
 }
 
 let dataProcessor = new DataProcessor();

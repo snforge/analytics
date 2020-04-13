@@ -118,6 +118,7 @@ module.exports = function(api) {
     dataprocessor.loadTimeSeriesNVNewCases();
     dataprocessor.loadTimeSerioesNVWashoeNewCases();
     dataprocessor.processGeo();
+    dataprocessor.loadUnemploymentTrend();
 
     // Just main page for now
     createPage({
