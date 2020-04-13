@@ -53,6 +53,7 @@ export default {
         animatedZooms: true,
         interactionModel: {}, // This disables pan and zoom in chart
         labelsDiv: this.$refs.dbdylabels,
+        labelsUTC: true,
         legend: 'follow',
         legendFormatter: this.legendFormatter,
         zoomCallback: this.handleZoom,

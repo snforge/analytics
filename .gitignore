@@ -2,6 +2,8 @@
 .cache
 node_modules
 
+datasrc
+
 # env files
 .env
 .env.local
