@@ -353,6 +353,9 @@ writeJson(chartFileName, barLabels)
     };      
     fs.writeJsonSync(unemploymentTrendFileName, jsonChartData);
     console.log(`Saved ${unemploymentTrendFileName}`);
+
+    return jsonTrendDataChart;
+    
   }
 
 }
