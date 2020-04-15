@@ -51,7 +51,7 @@ class DataProcessor {
         .subtract(diff++, 'day')
         .format('M/D/YY');
       if (todayColumn in data[0]) {
-        logger.info(`Last day is ${todayColumn}`);
+        // logger.info(`Last day is ${todayColumn}`);
         return todayColumn;
       }
     }
@@ -65,9 +65,9 @@ loadCSVData(){
     // DataLib allows to load CSV and then do group by / calculations on the data
     // See documentation on DataLib: https://github.com/vega/datalib/wiki/API-Reference
     this.data = dl.csv(ccseTimeSeriesConfirmedUS);
-    logger.info(`Loaded ${this.data.length} entries from ${ccseTimeSeriesConfirmedUS}`);
+    // logger.info(`Loaded ${this.data.length} entries from ${ccseTimeSeriesConfirmedUS}`);
     this.todayColumn = this.getLasDayColumn(this.data); //  '4/6/20'; //moment().format('M/D/YY');
-    logger.info(`Last available day:  ${this.todayColumn}`); 
+    // logger.info(`Last available day:  ${this.todayColumn}`); 
 
      // Now we need to calculate totals in each Date column in csv to see the trend
     this.dateColumns = Object.keys(this.data[0]).slice(11);
@@ -83,7 +83,7 @@ writeJson(chartFileName, barLabels)
 {
   let nameTodayColumn = `sum_${this.todayColumn}`;
   this.currentTotal = this.rollupTrend[0][nameTodayColumn];
-  logger.info(`currentTotal:  ${this.currentTotal}`);
+  // logger.info(`currentTotal:  ${this.currentTotal}`);
 
   let jsonTrendData = [];
   jsonTrendData = this.dateColumns.map(x => {
@@ -101,7 +101,7 @@ writeJson(chartFileName, barLabels)
   };
 
   fs.writeJsonSync(chartFileName, jsonChartData);
-  console.log(`Saved ${chartDataUSTrend}`);
+  // console.log(`Saved ${chartDataUSTrend}`);
 }
 
 /********************************************************************
@@ -146,10 +146,16 @@ writeJson(chartFileName, barLabels)
     let dataColumns = Object.keys(dataNewCases[0]).slice(11);
     for ( let i = 1; i < dataNewCases.length; i++ )
     { 
+      dataNewCases[i][dataColumns[0]] = 0;
       // logger.info(`NEW CASES :  ${dataNewCases[0].length}`);
       for ( let j = dataColumns.length - 1; j > 0; j-- )
       {
         dataNewCases[i][dataColumns[j]] = dataNewCases[i][dataColumns[j]] - dataNewCases[i][dataColumns[j-1]];
+        if (dataNewCases[i][dataColumns[j]] < 0){
+          // logger.info(`loadTimeSeriesNewCases BEdataNewCases[${i}][${dataColumns[j]}], j-1 ${dataColumns[j-1]}  ${dataNewCases[i][dataColumns[j]]}`); 
+          // logger.info(`loadTimeSeriesNewCases Admin2: ${dataNewCases[i]['Admin2']}`); 
+          dataNewCases[i][dataColumns[j]] = 0; 
+         }
       } 
     }
 
@@ -172,10 +178,16 @@ writeJson(chartFileName, barLabels)
     let dataColumns = Object.keys(dataNewCases[0]).slice(11);
     for ( let i = 1; i < dataNewCases.length; i++ )
     {
+      dataNewCases[i][dataColumns[0]] = 0;
       for ( let j = dataColumns.length - 1; j > 0; j-- )
       {
         dataNewCases[i][dataColumns[j]] = dataNewCases[i][dataColumns[j]] - dataNewCases[i][dataColumns[j-1]];
-      } 
+        if (dataNewCases[i][dataColumns[j]] < 0){
+          // logger.info(`loadTimeSeriesCANewCases  BEdataNewCases[${i}][${dataColumns[j]}], j-1 ${dataColumns[j-1]}  ${dataNewCases[i][dataColumns[j]]}`); 
+          // logger.info(`loadTimeSeriesCANewCases  Admin2: ${dataNewCases[i]['Admin2']}`);
+          dataNewCases[i][dataColumns[j]] = 0;
+        }
+     } 
     }
 
     this.rollupTrend = dl
@@ -250,9 +262,21 @@ writeJson(chartFileName, barLabels)
     let dataColumns = Object.keys(dataNewCases[0]).slice(11);
     for ( let i = 1; i < dataNewCases.length; i++ )
     {
+      dataNewCases[i][dataColumns[0]] = 0;
       for ( let j = dataColumns.length - 1; j > 0; j-- )
       {
         dataNewCases[i][dataColumns[j]] = dataNewCases[i][dataColumns[j]] - dataNewCases[i][dataColumns[j-1]];
+        if (dataNewCases[i][dataColumns[j]] < 0){
+          if (
+            (dataNewCases[i]['Province_State'].localeCompare('Nevada') == 0) &&
+            (dataNewCases[i]['Admin2'].localeCompare('Unassigned') != 0)
+          )
+          {
+            logger.info(`loadTimeSeriesNVNewCases  BEdataNewCases[${i}][${dataColumns[j]}], j-1 ${dataColumns[j-1]}  ${dataNewCases[i][dataColumns[j]]}`); 
+            logger.info(`loadTimeSeriesNVNewCases  Admin2: ${dataNewCases[i]['Admin2']}`);
+          }
+          dataNewCases[i][dataColumns[j]] = 0; 
+        }      
       } 
     }
 
