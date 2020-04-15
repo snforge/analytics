@@ -93,6 +93,13 @@ writeJson(chartFileName, barLabels)
     return [currDate, value];
   });
 
+  // Clean up negative values to control data quality at least a bit
+  jsonTrendData = jsonTrendData.map(x => {
+    if (jsonTrendData[x] < 0) { 
+      jsonTrendData[x] = 0;
+    }
+  })
+
   let jsonChartData = {
     total: this.currentTotal,
     at: this.todayColumn,
@@ -101,7 +108,37 @@ writeJson(chartFileName, barLabels)
   };
 
   fs.writeJsonSync(chartFileName, jsonChartData);
-  // console.log(`Saved ${chartDataUSTrend}`);
+  // logger.info(`Saved file ${chartFileName}`);
+}
+
+/********************************************************************
+* calculateDailyCasesFromSeries
+* ******************************************************************/
+calculateNewCasesFromSeries(){
+  let dataNewCases = this.data;
+  let dataColumns = Object.keys(dataNewCases[0]).slice(11);
+  for ( let i = 1; i < dataNewCases.length; i++ )
+  { 
+    dataNewCases[i][dataColumns[0]] = 0;
+    for ( let j = dataColumns.length - 1; j > 0; j-- )
+    {
+      dataNewCases[i][dataColumns[j]] = dataNewCases[i][dataColumns[j]] - dataNewCases[i][dataColumns[j-1]];
+      if (dataNewCases[i][dataColumns[j]] < 0){
+           /* Troubleshooting only
+          if (
+            (dataNewCases[i]['Province_State'].localeCompare('Nevada') == 0) &&
+            (dataNewCases[i]['Admin2'].localeCompare('Unassigned') != 0)
+          )
+          {
+            logger.info(`loadTimeSeriesNVNewCases  BEdataNewCases[${i}][${dataColumns[j]}], j-1 ${dataColumns[j-1]}  ${dataNewCases[i][dataColumns[j]]}`); 
+            logger.info(`loadTimeSeriesNVNewCases  Admin2: ${dataNewCases[i]['Admin2']}`);
+          }
+          */
+         dataNewCases[i][dataColumns[j]] = 0; 
+      }
+    } 
+  }
+  return dataNewCases;
 }
 
 /********************************************************************
@@ -141,23 +178,8 @@ writeJson(chartFileName, barLabels)
   loadTimeSeriesNewCases() {
 
     this.loadCSVData();
-     
-    let dataNewCases = this.data;
-    let dataColumns = Object.keys(dataNewCases[0]).slice(11);
-    for ( let i = 1; i < dataNewCases.length; i++ )
-    { 
-      dataNewCases[i][dataColumns[0]] = 0;
-      // logger.info(`NEW CASES :  ${dataNewCases[0].length}`);
-      for ( let j = dataColumns.length - 1; j > 0; j-- )
-      {
-        dataNewCases[i][dataColumns[j]] = dataNewCases[i][dataColumns[j]] - dataNewCases[i][dataColumns[j-1]];
-        if (dataNewCases[i][dataColumns[j]] < 0){
-          // logger.info(`loadTimeSeriesNewCases BEdataNewCases[${i}][${dataColumns[j]}], j-1 ${dataColumns[j-1]}  ${dataNewCases[i][dataColumns[j]]}`); 
-          // logger.info(`loadTimeSeriesNewCases Admin2: ${dataNewCases[i]['Admin2']}`); 
-          dataNewCases[i][dataColumns[j]] = 0; 
-         }
-      } 
-    }
+
+    let dataNewCases = this.calculateNewCasesFromSeries();
 
     this.rollupTrend = dl
       .groupby('Country_Region')
@@ -174,21 +196,7 @@ writeJson(chartFileName, barLabels)
 
     this.loadCSVData();
 
-    let dataNewCases = this.data;
-    let dataColumns = Object.keys(dataNewCases[0]).slice(11);
-    for ( let i = 1; i < dataNewCases.length; i++ )
-    {
-      dataNewCases[i][dataColumns[0]] = 0;
-      for ( let j = dataColumns.length - 1; j > 0; j-- )
-      {
-        dataNewCases[i][dataColumns[j]] = dataNewCases[i][dataColumns[j]] - dataNewCases[i][dataColumns[j-1]];
-        if (dataNewCases[i][dataColumns[j]] < 0){
-          // logger.info(`loadTimeSeriesCANewCases  BEdataNewCases[${i}][${dataColumns[j]}], j-1 ${dataColumns[j-1]}  ${dataNewCases[i][dataColumns[j]]}`); 
-          // logger.info(`loadTimeSeriesCANewCases  Admin2: ${dataNewCases[i]['Admin2']}`);
-          dataNewCases[i][dataColumns[j]] = 0;
-        }
-     } 
-    }
+    let dataNewCases = this.calculateNewCasesFromSeries();
 
     this.rollupTrend = dl
       .groupby('Province_State')
@@ -206,15 +214,7 @@ writeJson(chartFileName, barLabels)
 
     this.loadCSVData();
 
-    let dataNewCases = this.data;
-    let dataColumns = Object.keys(dataNewCases[0]).slice(11);
-    for ( let i = 1; i < dataNewCases.length; i++ )
-    {
-      for ( let j = dataColumns.length - 1; j > 0; j-- )
-      {
-        dataNewCases[i][dataColumns[j]] = dataNewCases[i][dataColumns[j]] - dataNewCases[i][dataColumns[j-1]];
-      } 
-    }
+    let dataNewCases = this.calculateNewCasesFromSeries();
 
     this.rollupTrend = dl
       .groupby('Admin2')
@@ -232,15 +232,7 @@ writeJson(chartFileName, barLabels)
 
     this.loadCSVData();
 
-    let dataNewCases = this.data;
-    let dataColumns = Object.keys(dataNewCases[0]).slice(11);
-    for ( let i = 1; i < dataNewCases.length; i++ )
-    {
-      for ( let j = dataColumns.length - 1; j > 0; j-- )
-      {
-        dataNewCases[i][dataColumns[j]] = dataNewCases[i][dataColumns[j]] - dataNewCases[i][dataColumns[j-1]];
-      } 
-    }
+    let dataNewCases = this.calculateNewCasesFromSeries();
    
     this.rollupTrend = dl
       .groupby('Admin2')
@@ -258,27 +250,7 @@ writeJson(chartFileName, barLabels)
 
     this.loadCSVData();
 
-    let dataNewCases = this.data;
-    let dataColumns = Object.keys(dataNewCases[0]).slice(11);
-    for ( let i = 1; i < dataNewCases.length; i++ )
-    {
-      dataNewCases[i][dataColumns[0]] = 0;
-      for ( let j = dataColumns.length - 1; j > 0; j-- )
-      {
-        dataNewCases[i][dataColumns[j]] = dataNewCases[i][dataColumns[j]] - dataNewCases[i][dataColumns[j-1]];
-        if (dataNewCases[i][dataColumns[j]] < 0){
-          if (
-            (dataNewCases[i]['Province_State'].localeCompare('Nevada') == 0) &&
-            (dataNewCases[i]['Admin2'].localeCompare('Unassigned') != 0)
-          )
-          {
-            logger.info(`loadTimeSeriesNVNewCases  BEdataNewCases[${i}][${dataColumns[j]}], j-1 ${dataColumns[j-1]}  ${dataNewCases[i][dataColumns[j]]}`); 
-            logger.info(`loadTimeSeriesNVNewCases  Admin2: ${dataNewCases[i]['Admin2']}`);
-          }
-          dataNewCases[i][dataColumns[j]] = 0; 
-        }      
-      } 
-    }
+    let dataNewCases = this.calculateNewCasesFromSeries();
 
     this.rollupTrend = dl
       .groupby('Province_State')
@@ -296,15 +268,7 @@ writeJson(chartFileName, barLabels)
 
     this.loadCSVData();
 
-    let dataNewCases = this.data;
-    let dataColumns = Object.keys(dataNewCases[0]).slice(11);
-    for ( let i = 1; i < dataNewCases.length; i++ )
-    {
-      for ( let j = dataColumns.length - 1; j > 0; j-- )
-      {
-        dataNewCases[i][dataColumns[j]] = dataNewCases[i][dataColumns[j]] - dataNewCases[i][dataColumns[j-1]];
-      } 
-    }
+    let dataNewCases = this.calculateNewCasesFromSeries();
    
     this.rollupTrend = dl
       .groupby('Admin2')
