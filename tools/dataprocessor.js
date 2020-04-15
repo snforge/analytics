@@ -94,11 +94,13 @@ writeJson(chartFileName, barLabels)
   });
 
   // Clean up negative values to control data quality at least a bit
+  /*
   jsonTrendData = jsonTrendData.map(x => {
     if (jsonTrendData[x] < 0) { 
       jsonTrendData[x] = 0;
     }
   })
+  */
 
   let jsonChartData = {
     total: this.currentTotal,
