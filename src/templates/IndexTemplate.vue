@@ -8,7 +8,7 @@
     <v-row no-gutters>
       <v-col>
         <v-container>
-          <div class="pa-1 mb-0" style="height: 2000px;">
+          <div class="pa-1 mb-0" style="height: 2400px;">
              US Confirmed Cases. Total (Population 328.2 million)
             <bar-chart :filename="'us_trend.json'"> </bar-chart>
              California Confirmed Cases. Total (Population 39.5 million)

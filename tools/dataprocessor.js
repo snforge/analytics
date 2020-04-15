@@ -90,17 +90,9 @@ writeJson(chartFileName, barLabels)
     let currDate = moment.utc(x, 'M/D/YY').valueOf();
     let rollupColumnName = `sum_${x}`;
     let value = this.rollupTrend[0][rollupColumnName] || 0;
+    if (value < 0) {value = 0;}
     return [currDate, value];
   });
-
-  // Clean up negative values to control data quality at least a bit
-  /*
-  jsonTrendData = jsonTrendData.map(x => {
-    if (jsonTrendData[x] < 0) { 
-      jsonTrendData[x] = 0;
-    }
-  })
-  */
 
   let jsonChartData = {
     total: this.currentTotal,
