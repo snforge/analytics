@@ -9,21 +9,21 @@
       <v-col>
         <v-container>
           <div class="pa-1 mb-0" style="height: 2000px;">
-             US Confirmed Cases. Total.
+             US Confirmed Cases. Total (Population 328.2 million)
             <bar-chart :filename="'us_trend.json'"> </bar-chart>
-             California Confirmed Cases. Total.
+             California Confirmed Cases. Total (Population 39.5 million)
             <bar-chart :filename="'us_CA_trend.json'"> </bar-chart>
-             US Daily New Confirmed Cases 
+             US Daily New Confirmed Cases
             <bar-chart :filename="'us_new_cases_trend.json'"> </bar-chart>
              California Daily New Confirmed Cases
             <bar-chart :filename="'us_CA_new_cases_trend.json'"> </bar-chart>
-             San Mateo California  Daily New Confirmed Cases
+             San Mateo California  Daily New Confirmed Cases (Population 0.727 million)
             <bar-chart :filename="'us_CA_San_Mateo_new_cases_trend.json'"> </bar-chart>
-             Contra Costa California  Daily New Confirmed Cases
+             Contra Costa California  Daily New Confirmed Cases (Population 1.154 million)
             <bar-chart :filename="'us_CA_Contra_Costa_new_cases_trend.json'"> </bar-chart>
-             Nevada Daily New Confirmed Cases
+             Nevada Daily New Confirmed Cases (Population 3.08 million)
             <bar-chart :filename="'us_NV_new_cases_trend.json'"> </bar-chart>
-             Washoe Nevada Daily New Confirmed Cases
+             Washoe Nevada Daily New Confirmed Cases (Population 0.471 million)
             <bar-chart :filename="'us_NV_Washoe_new_cases_trend.json'"> </bar-chart>
              US Unemployment Rate (from Buareu of Labor Statistics)
              <bar-chart :filename="'unemployment_trend.json'"> </bar-chart>
