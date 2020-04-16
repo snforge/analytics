@@ -270,6 +270,7 @@ calculateNewCasesFromSeries(){
       .execute(this.data)
       .filter(function(d) {return d['Admin2'] == 'Washoe'});
 
+    console.log(`This is a test log message`);
     this.writeJson(chartDataUSNVWashoeTrendNewCases,['Date', 'Daily New Cases in Washoe']);
   }
 
