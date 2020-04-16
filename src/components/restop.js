@@ -21,12 +21,19 @@ class RestOp extends OpResult {
           apiop.code = pathOr(0, ['status'], response);
           apiop.data = pathOr(null, ['data'], response);
           apiop.message = '';
+          // repeated 3 times for Nicrosoft Edge because it does not undestand .finally. 
+          apiop.complete = true;
+          apiop.duration = Date.now() - startTs;
+          resolve(apiop);
         })
         .catch(function(error) {
           apiop.success = false;
           apiop.code = pathOr(-1, ['response', 'status'], error);
           apiop.message = pathOr(error.message, ['response', 'statusText'], error);
           apiop.data = pathOr(null, ['response', 'data'], error);
+          apiop.complete = true;
+          apiop.duration = Date.now() - startTs;
+          resolve(apiop);
         })
         .finally(() => {
           apiop.complete = true;

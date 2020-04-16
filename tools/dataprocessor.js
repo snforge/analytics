@@ -32,14 +32,12 @@ const unemploymentRawTrendFileName = path.join(financePath, 'unemployment_bls_re
  * ******************************************************************/
 class DataProcessor {
 
-  data = [];
-  todayColumn = '';
-  dataColums;
-  summSpec;
-  rollupTrend;
-
   constructor() {
-    // TODO
+    this.data = [];
+    this.todayColumn = '';
+    this.dataColums;
+    this.summSpec;
+    this.rollupTrend;
   }
 
   // Detect last available day in the data
