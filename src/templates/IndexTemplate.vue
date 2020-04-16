@@ -27,9 +27,10 @@
             <bar-chart :filename="'us_NV_Washoe_new_cases_trend.json'"> </bar-chart>
              US Unemployment Rate (from Buareu of Labor Statistics)
              <bar-chart :filename="'unemployment_trend.json'"> </bar-chart>
- 
+
+             <market-trend-chart></market-trend-chart>
           </div>
-          </div> <geo-map> </geo-map>
+          <geo-map> </geo-map>
         </v-container>
       </v-col>
     </v-row>
@@ -60,6 +61,7 @@ import Dygraphs from '../components/Dygraphs.vue';
 import GeoMap from '../components/geomap.vue';
 import backendAPI from '../components/backendapi';
 import BarChart from '../components/BarChart.vue';
+import MarketTrendChart from '../components/MarketTrendChart.vue';
 
 export default {
   metaInfo: {
@@ -70,7 +72,8 @@ export default {
     FooterBanner,
     Dygraphs,
     BarChart,
-    GeoMap
+    GeoMap,
+    MarketTrendChart
   },
   props: {}
 };
