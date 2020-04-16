@@ -34,12 +34,14 @@ class RestOp extends OpResult {
           apiop.complete = true;
           apiop.duration = Date.now() - startTs;
           resolve(apiop);
-        })
+        });
+        /* finally is a better way, but Microsoft Edge does not work
         .finally(() => {
           apiop.complete = true;
           apiop.duration = Date.now() - startTs;
           resolve(apiop);
         });
+        */
     });
   }
 
