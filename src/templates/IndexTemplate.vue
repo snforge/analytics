@@ -27,7 +27,7 @@
             <bar-chart :filename="'us_NV_Washoe_new_cases_trend.json'"> </bar-chart>
              US Unemployment Rate (from Buareu of Labor Statistics)
              <bar-chart :filename="'unemployment_trend.json'"> </bar-chart>
-
+             Market Indexes vs US Confirmed Cases
              <market-trend-chart></market-trend-chart>
           </div>
           <geo-map> </geo-map>
