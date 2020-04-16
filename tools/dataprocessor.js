@@ -14,7 +14,7 @@ const staticPath = path.join(__dirname, '..', 'static');
 const financePath = path.join(dataPath, 'finance');
 
 const ccseTimeSeriesConfirmedUS = path.join(dataPath, 'csse_covid_19_time_series', 'time_series_covid19_confirmed_US.csv');
-// const ccseTimeSeriesConfirmedUSCA = path.join(dataPath, 'csse_covid_19_time_series', 'time_series_covid19_confirmed_US_CA test.csv');
+const ccseTimeSeriesConfirmedUSCA = path.join(dataPath, 'csse_covid_19_time_series', 'time_series_covid19_confirmed_US_CA test.csv');
 const chartDataUSTrend = path.join(staticPath, 'us_trend.json');
 const chartDataUSCATrend = path.join(staticPath, 'us_CA_trend.json');
 const chartDataUSTrendNewCases = path.join(staticPath, 'us_new_cases_trend.json');
