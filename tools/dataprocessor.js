@@ -261,7 +261,7 @@ calculateNewCasesFromSeries(){
   loadTimeSerioesNVWashoeNewCases() {
 
     this.loadCSVData();
-
+    let x = 0; 
     let dataNewCases = this.calculateNewCasesFromSeries();
    
     this.rollupTrend = dl
