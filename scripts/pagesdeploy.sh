@@ -6,6 +6,8 @@ set -e
 # navigate into the build output directory
 cd dist
 
+echo 'oddmango.com' > CNAME
+
 git init
 git add -A
 git config user.name "snforge"

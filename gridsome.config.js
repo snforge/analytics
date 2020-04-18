@@ -6,8 +6,7 @@
 
 module.exports = {
   siteName: 'Analytics',
-  siteUrl: 'https://snforge.github.io',
-  pathPrefix: '/analytics',
+  siteUrl: 'http://oddmango.com',
   plugins: [
     {
       use: '@gridsome/source-filesystem',
