@@ -4,5 +4,5 @@
 
 ## List of items TODO
 
-TEST CICD
+TEST
 
