@@ -1,7 +1,7 @@
 import { RestOp } from './restop';
 
 //import { pathOr } from 'ramda';
-const basePath = process.env.GRIDSOME_API_URL || '/analytics/';
+const basePath = process.env.GRIDSOME_API_URL || '/';
 
 const backendAPI = {
   // Get US Trend Data
