@@ -6,7 +6,7 @@
 
 module.exports = {
   siteName: 'Analytics',
-  siteUrl: 'http://oddmango.com',
+  siteUrl: 'https://oddmango.com',
   plugins: [
     {
       use: '@gridsome/source-filesystem',
