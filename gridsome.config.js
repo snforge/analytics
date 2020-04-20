@@ -6,7 +6,7 @@
 
 module.exports = {
   siteName: 'Analytics',
-  siteUrl: 'http://oddmango.com',
+  siteUrl: 'https://oddmango.com',
   plugins: [
     {
       use: '@gridsome/source-filesystem',
@@ -19,6 +19,12 @@ module.exports = {
             create: true
           }
         }
+      }
+    },
+    {
+      use: '@gridsome/plugin-google-analytics',
+      options: {
+        id: 'UA-3545520-2'
       }
     }
   ],
