@@ -30,6 +30,24 @@
              Market Indexes vs US Confirmed Cases
              <market-trend-chart></market-trend-chart>
           </div>
+          <br></br>
+          <div>
+            <h2>Comparison of California wit others</h2>
+            <table>
+              <tr><th>Mame</th><th>Total cases</th><th>Per 100k</th><th>Total deaths</th><th>Per 100k</th></tr>
+              <tr><td>New York</td><td>247,815</td><td>1263.2</td><td>18,298</td><td>93.3 </td></tr>
+              <tr><td>New Jersey</td><td>85,301</td><td>960.4</td><td>4,362</td><td>49.1</td></tr>
+              <tr><td>Massachusetts</td><td>38,077</td><td>557.5</td><td>1,706</td><td>25.0</td></tr>
+              <tr><td>Pennsylvania</td><td>32,902</td><td>257.2</td><td>1,276</td><td>10.0</td></tr>
+              <tr><td>California</td><td>31,527</td><td>80.5</td><td>1,177</td><td>3.0</td></tr>
+              <tr><td>Michigan</td><td>31,424</td><td>315.6</td><td>2,391</td><td>24.0</td></tr>
+              <tr><td>Illinois</td><td>30,357</td><td>236.8</td><td>1,290</td><td>10.1</td></tr>
+              <tr><td>Florida</td><td>26,314</v><td>127.7</td><td>774</td><td>3.8</td></tr>
+              <tr><td>Louisiana</td><td>23,928</td><td>513.1</td><td>1,296</td><td>27.8</td></tr>
+              <tr><td>Texas</td><td>19,260</td><td>69.1</td><td>490</td><td>1.8</td></tr>
+            </table>
+          </div>
+          <br></br>
           <geo-map> </geo-map>
         </v-container>
       </v-col>
@@ -82,5 +100,18 @@ export default {
 <style>
 .home-links a {
   margin-right: 1rem;
+},
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+tr:nth-child(even) {
+  background-color: #dddddd;
 }
 </style>
