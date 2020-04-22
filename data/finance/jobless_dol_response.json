@@ -1,0 +1,84 @@
+{
+    "Results": {
+        "series": [
+                {
+                    "seriesID": "DOL0021231",
+                    "data": [
+                        {
+                            "year": "2020",
+                            "periodName": "April",
+                            "periodDay": "21",
+                            "value": "4150000"
+                        },
+                        {
+                            "year": "2020",
+                            "periodName": "April",
+                            "periodDay": "16",
+                            "value": "5245000"
+                        },
+                        {
+                            "year": "2020",
+                            "periodName": "April",
+                            "periodDay": "09",
+                            "value": "6606000"
+                        },
+                        {
+                            "year": "2020",
+                            "periodName": "April",
+                            "periodDay": "02",
+                            "value": "6648000"
+                        },	
+                        {
+                            "year": "2020",
+                            "periodName": "March",
+                            "periodDay": "26",
+                            "value": "3283000"
+                        },
+                        {
+                            "year": "2020",
+                            "periodName": "March",
+                            "periodDay": "19",
+                            "value": "281000"
+                        },
+                        {
+                            "year": "2020",
+                            "periodName": "March",
+                            "periodDay": "12",
+                            "value": "211000"
+                        },
+                        {
+                            "year": "2020",
+                            "periodName": "March",
+                            "periodDay": "05",
+                            "value": "216000"
+                        },
+                        {
+                            "year": "2020",
+                            "periodName": "February",
+                            "periodDay": "27",
+                            "value": "219000"
+                        },
+                        {
+                            "year": "2020",
+                            "periodName": "February",
+                            "periodDay": "20",
+                            "value": "210000"
+                        },
+                        {
+                            "year": "2020",
+                            "periodName": "February",
+                            "periodDay": "13",
+                            "value": "205000"
+                        },
+                        {
+                            "year": "2020",
+                            "periodName": "February",
+                            "periodDay": "06",
+                            "value": "202000"
+                        }
+                    ]
+                }
+        ]
+    }
+}
+	

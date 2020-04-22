@@ -26,6 +26,8 @@ const chartDataUSNVWashoeTrendNewCases = path.join(staticPath, 'us_NV_Washoe_new
 const chartDataUSGeo = path.join(staticPath, 'us_geo.json');
 const unemploymentTrendFileName = path.join(staticPath, 'unemployment_trend.json');
 const unemploymentRawTrendFileName = path.join(financePath, 'unemployment_bls_response.json')
+const joblessTrendFileName = path.join(staticPath, 'jobless_claims_trend.json')
+const joblessRawTrendFileName = path.join(financePath, 'jobless_dol_response.json')
 
 /********************************************************************
  * DataProcessor
@@ -116,16 +118,6 @@ calculateNewCasesFromSeries(){
     {
       dataNewCases[i][dataColumns[j]] = dataNewCases[i][dataColumns[j]] - dataNewCases[i][dataColumns[j-1]];
       if (dataNewCases[i][dataColumns[j]] < 0){
-           /* Troubleshooting only
-          if (
-            (dataNewCases[i]['Province_State'].localeCompare('Nevada') == 0) &&
-            (dataNewCases[i]['Admin2'].localeCompare('Unassigned') != 0)
-          )
-          {
-            logger.info(`loadTimeSeriesNVNewCases  BEdataNewCases[${i}][${dataColumns[j]}], j-1 ${dataColumns[j-1]}  ${dataNewCases[i][dataColumns[j]]}`); 
-            logger.info(`loadTimeSeriesNVNewCases  Admin2: ${dataNewCases[i]['Admin2']}`);
-          }
-          */
          dataNewCases[i][dataColumns[j]] = 0; 
       }
     } 
@@ -335,7 +327,42 @@ calculateNewCasesFromSeries(){
     console.log(`Saved ${unemploymentTrendFileName}`);
 
     return jsonTrendDataChart;
-    
+  }
+
+/********************************************************************
+* loadUnemploymentTrend
+* Data format:
+* .Results.series.data[0..M]
+* [ {year:"2020", periodName:"March", value:"4.4"}, {...}, { 2010 ...}]
+* ******************************************************************/  
+  loadDOLJoblessTrend() {
+
+    let rawData = dl.json(joblessRawTrendFileName);
+    let rawDataYers = rawData.Results.series[0].data;
+
+    let jsonTrendData = rawDataYers.map(x => {
+      let currDate = x.periodDay + "/" + x.periodName + "/" + x.year;
+      let currDateNum = moment.utc(currDate, 'DD/MMM/YYYY').valueOf();
+      let value = parseFloat(x.value);
+      return [currDateNum, value];
+    })
+
+    let jsonLen = jsonTrendData.length;
+    let jsonTrendDataChart = [];
+    for (let i = 0; i < jsonLen; i++) {
+      jsonTrendDataChart[i] = jsonTrendData[jsonLen-1-i];
+    }
+
+    let jsonChartData = {
+      total: 0,
+      at: this.todayColumn,
+      labels: ["Date", "Claims"],
+      data: jsonTrendDataChart
+    };      
+    fs.writeJsonSync(joblessTrendFileName, jsonChartData);
+    console.log(`Saved ${joblessTrendFileName}`);
+
+    return jsonTrendDataChart;
   }
 
 }

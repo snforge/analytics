@@ -25,14 +25,17 @@
             <bar-chart :filename="'us_NV_new_cases_trend.json'"> </bar-chart>
              Washoe Nevada Daily New Confirmed Cases (Population 0.471 million)
             <bar-chart :filename="'us_NV_Washoe_new_cases_trend.json'"> </bar-chart>
-             US Unemployment Rate (from Buareu of Labor Statistics)
+             US Unemployment Rate (from US Buareu of Labor Statistics)
              <bar-chart :filename="'unemployment_trend.json'"> </bar-chart>
+            US Jobless Clims  (from US Department of Labor)
+             <bar-chart :filename="'jobless_claims_trend.json'"> </bar-chart>
+
              Market Indexes vs US Confirmed Cases
              <market-trend-chart></market-trend-chart>
           </div>
           <br></br>
           <div>
-            <h2>Comparison of California wit others</h2>
+            <h2>Comparison of California with others</h2>
             <table>
               <tr><th>Mame</th><th>Total cases</th><th>Per 100k</th><th>Total deaths</th><th>Per 100k</th></tr>
               <tr><td>New York</td><td>247,815</td><td>1263.2</td><td>18,298</td><td>93.3 </td></tr>
@@ -47,7 +50,7 @@
               <tr><td>Texas</td><td>19,260</td><td>69.1</td><td>490</td><td>1.8</td></tr>
             </table>
           </div>
-          <br></br>
+          <br> </br>
           <geo-map> </geo-map>
         </v-container>
       </v-col>
