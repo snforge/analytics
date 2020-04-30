@@ -7,11 +7,29 @@
           <p> Analytics about the most importnat world events at your fingerprints</p>          
         </v-container>
       </v-col>
-    </v-row>
+      </v-row>
+
       <v-row no-gutters>
       <v-col>
         <v-container>
+        <h2> COVID-19 Analytics </h2>
+        </v-container>
+        <v-container>
+          <g-link class="nav__link" to="/covid-19-analytics">Selected COVID-19 Analytics</g-link>
+        </v-container>
+      </v-col>
+      </v-row>
+
+      <v-row no-gutters>
+      <v-container>
+        <h2> Solar Energy </h2>
+        </v-container>         
+      <v-col>
+        <v-container>
           <g-link class="nav__link" to="/covid-19-analytics">covid-19 Analytics</g-link>
+        
+          <g-link class="nav__link" to="https://www.timeanddate.com/sun/usa/san-francisco?month=6">Daylight duration</g-link>
+
         </v-container>
       </v-col>
     </v-row>

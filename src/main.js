@@ -28,7 +28,7 @@ export default function(Vue, { router, appOptions, head, isClient }) {
   // Add a meta tag
   head.meta.push({
     name: 'keywords',
-    content: 'Analytics,COVID-19,predictions,charts,uniquekeywordfortestinghillsgreen'
+    content: 'Analytics,COVID-19,predictions,charts,uniquekeywordfortestinghillsgreen,solar energy, time and date'
   });
 
   Vue.use(VueFuse);
