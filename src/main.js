@@ -25,6 +25,12 @@ export default function(Vue, { router, appOptions, head, isClient }) {
   });
   */
 
+  // Add a meta tag
+  head.meta.push({
+    name: 'keywords',
+    content: 'Analytics,COVID-19,predictions,charts,uniquekeywordfortestinghillsgreen'
+  });
+
   Vue.use(VueFuse);
 
   // TODO Vuetify opts - includes, vuetify themes, icons, etc.
