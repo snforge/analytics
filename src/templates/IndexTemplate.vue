@@ -27,6 +27,7 @@
       <v-col>
         <v-container>
           <g-link class="nav__link" to="https://www.timeanddate.com/sun/usa/san-francisco?month=6">Daylight duration</g-link>
+          <g-link class="nav__link" to="https://www.google.com/get/sunroof">Google sunroof</g-link>
         </v-container>
       </v-col>
     </v-row>
