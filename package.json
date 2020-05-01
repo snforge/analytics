@@ -27,6 +27,7 @@
     "loglevel": "^1.6.7",
     "mapbox-gl": "^1.9.1",
     "moment": "^2.24.0",
+    "node-nlp": "^4.3.0",
     "tinycolor2": "^1.4.1",
     "vue-clamp": "^0.3.0",
     "vue-fuse": "^2.2.1",
