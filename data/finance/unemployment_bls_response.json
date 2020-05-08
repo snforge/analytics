@@ -26,6 +26,30 @@
         "data": [
           {
             "year": "2020",
+            "period": "M04",
+            "periodName": "April",
+            "latest": "true",
+            "value": "20.5",
+            "footnotes": [
+              {}
+            ],
+            "calculations": {
+              "net_changes": {
+                "1": "0.9",
+                "3": "0.9",
+                "6": "0.9",
+                "12": "0.6"
+              },
+              "pct_changes": {
+                "1": "25.7",
+                "3": "25.7",
+                "6": "25.7",
+                "12": "15.8"
+              }
+            }
+          },     
+          {
+            "year": "2020",
             "period": "M03",
             "periodName": "March",
             "latest": "true",

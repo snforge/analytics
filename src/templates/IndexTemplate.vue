@@ -4,7 +4,7 @@
       <v-col>
         <v-container>
           <h1> Analytics Platform </h1>
-          <p> Analytics about the most importnat world events at your fingerprints</p>          
+          <p> Analytics about the most importnat world events at your fingerprtips</p>          
         </v-container>
       </v-col>
       </v-row>
