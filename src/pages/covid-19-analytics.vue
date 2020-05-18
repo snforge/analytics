@@ -50,6 +50,13 @@
               <tr><td>Texas</td><td>19,260</td><td>69.1</td><td>490</td><td>1.8</td></tr>
             </table>
           </div>
+          <div>
+            <v-row>
+                <v-col>
+                  <a href="http://www.gurufocus.com/stock-market-valuations.php"> Buffet Chart </a>
+                </v-col>
+              </v-row>
+          </div>
           <br> </br>
           <geo-map> </geo-map>
         </v-container>
@@ -70,7 +77,7 @@
         <footer-banner/>
       </v-col>
     </v-row>
-  </Layout>
+   </Layout>
 </template>
 
 <script>
