@@ -6,6 +6,36 @@
                     "data": [
                         {
                             "year": "2020",
+                            "periodName": "May",
+                            "periodDay": "30",
+                            "value": "1877000"
+                        },
+                        {
+                            "year": "2020",
+                            "periodName": "May",
+                            "periodDay": "23",
+                            "value": "2123000s"
+                        },
+                        {
+                            "year": "2020",
+                            "periodName": "May",
+                            "periodDay": "16",
+                            "value": "2438000"
+                        },
+                        {
+                            "year": "2020",
+                            "periodName": "May",
+                            "periodDay": "09",
+                            "value": "2981000"
+                        },
+                        {
+                            "year": "2020",
+                            "periodName": "May",
+                            "periodDay": "01",
+                            "value": "3215000"
+                        },
+                        {
+                            "year": "2020",
                             "periodName": "April",
                             "periodDay": "21",
                             "value": "4150000"
