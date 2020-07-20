@@ -23,7 +23,7 @@
     "deck.gl": "^8.1.1",
     "dygraphs": "^2.1.0",
     "gridsome": "^0.7.13",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "loglevel": "^1.6.7",
     "mapbox-gl": "^1.9.1",
     "moment": "^2.24.0",
