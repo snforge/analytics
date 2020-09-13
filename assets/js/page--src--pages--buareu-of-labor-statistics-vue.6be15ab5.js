@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[4],{543:function(t,e,s){"use strict";s.r(e);var n={metaInfo:{title:"bureau of labor statistics"}},u=s(32),o=Object(u.a)(n,(function(){var t=this.$createElement,e=this._self._c||t;return e("Layout",[e("h1",[this._v("About us")]),e("p",[this._v("Some text")])])}),[],!1,null,null,null);e.default=o.exports}}]);
