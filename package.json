@@ -17,7 +17,7 @@
     "@gridsome/transformer-remark": "^0.5.0",
     "@sindresorhus/slugify": "^0.11.0",
     "axios": "^0.19.2",
-    "chart.js": "^2.9.3",
+    "chart.js": "^2.9.4",
     "chartjs-plugin-labels": "^1.1.0",
     "d3": "^5.15.1",
     "deck.gl": "^8.1.1",
